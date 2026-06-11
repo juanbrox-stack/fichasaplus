@@ -54,6 +54,35 @@ _S = {
     "light":   "#FAF9F5",
 }
 
+CDN_TURACO = "https://turaco.es/marketplaces/resources/imagenes"
+CDN_RES    = "1500x1500"
+
+# Mapeo campo Plytix → índice en el CDN de Turaco
+_CAMPO_A_INDICE = {
+    "foto_enriquecida_01": 1, "foto_enriquecida_02": 2,
+    "foto_enriquecida_03": 3, "foto_enriquecida_04": 4,
+    "foto_enriquecida_05": 5, "foto_enriquecida_06": 6,
+    "foto_enriquecida_no_text_01": 1, "foto_enriquecida_no_text_02": 2,
+    "foto_enriquecida_no_text_03": 3, "foto_enriquecida_no_text_04": 4,
+    "foto_enriquecida_no_text_05": 5, "foto_enriquecida_no_text_06": 6,
+    "foto_master_producto_main_image_1000x1000_png_01": 1,
+    "foto_master_producto_main_image_1000x1000_png_02": 2,
+    "Enhanced Photo 01": 1, "Enhanced Photo 02": 2,
+    "Enhanced Photo 03": 3, "Enhanced Photo 04": 4,
+    "Enhanced Photo 05": 5, "Enhanced Photo 06": 6,
+    "1000x1000 JPG (Marketplace) 01": 1, "1000x1000 JPG (Marketplace) 02": 2,
+    "1000x1000 JPG (Marketplace) 03": 3, "1000x1000 JPG (Marketplace) 04": 4,
+    "1000x1000 JPG (Marketplace) 05": 5,
+}
+
+def _url_turaco(sku: str, campo: str) -> str:
+    """Construye URL pública del CDN de Turaco para un campo de imagen."""
+    sku = sku.strip()
+    idx = _CAMPO_A_INDICE.get(campo)
+    if not sku or idx is None:
+        return ""
+    return f"{CDN_TURACO}/{sku}/{sku}_{idx}_{CDN_RES}.jpg"
+
 # ══════════════════════════════════════════════════════════════
 # HELPERS
 # ══════════════════════════════════════════════════════════════
@@ -150,8 +179,16 @@ def _img_tag(fila, campo, alt=""):
 # ══════════════════════════════════════════════════════════════
 # GENERADORES POR TIPO DE MÓDULO
 # ══════════════════════════════════════════════════════════════
+def _img_url(fila, campo):
+    """Devuelve URL pública: CDN Turaco si el campo está mapeado, si no URL del df."""
+    sku = str(fila.get("SKU","")).strip()
+    u_cdn = _url_turaco(sku, campo)
+    if u_cdn:
+        return u_cdn
+    return _url(_val(fila, campo))
+
 def gen_header(fila, cfg):
-    u   = _url(_val(fila, cfg.get("img","")))
+    u   = _img_url(fila, cfg.get("img",""))
     nom = _esc(_val(fila, cfg.get("titulo","")))
     dsc = _esc(_val(fila, cfg.get("desc","")))
     img = f'<img src="{u}" style="width:100%;height:100%;object-fit:cover" loading="lazy"/>' if u else ""
@@ -164,7 +201,7 @@ def gen_header(fila, cfg):
     )
 
 def gen_modulo(fila, cfg, idx):
-    u   = _url(_val(fila, cfg.get("img","")))
+    u   = _img_url(fila, cfg.get("img",""))
     tit = _esc(_val(fila, cfg.get("titulo","")))
     txt = _esc(_val(fila, cfg.get("desc","")))
     img = f'<img src="{u}" style="width:100%;height:100%;object-fit:cover" loading="lazy"/>' if u else ""
@@ -203,7 +240,7 @@ def gen_carrusel(fila, cfg):
     if not slides_cfg: return ""
     items = ""
     for s in slides_cfg:
-        u   = _url(_val(fila, s.get("img","")))
+        u   = _img_url(fila, s.get("img",""))
         tit = _esc(_val(fila, s.get("titulo","")) or s.get("titulo_fijo",""))
         txt = _esc(_val(fila, s.get("desc","")) or s.get("desc_fija",""))
         img = f'<img src="{u}" style="width:100%;height:240px;object-fit:cover;display:block"/>' if u else ""
@@ -223,7 +260,7 @@ def gen_tabs(fila, cfg):
     out = f'<div style="{_S["wrap"]};{_S["border"]}">'
     for i, t in enumerate(tabs_cfg):
         label = _esc(_val(fila, t.get("label","")) or t.get("label_fijo",f"Tab {i+1}"))
-        u     = _url(_val(fila, t.get("img","")))
+        u     = _img_url(fila, t.get("img",""))
         tit   = _esc(_val(fila, t.get("titulo","")) or t.get("titulo_fijo",""))
         txt   = _esc(_val(fila, t.get("desc","")) or t.get("desc_fija",""))
         img   = f'<img src="{u}" style="width:45%;height:100%;object-fit:cover;flex-shrink:0"/>' if u else ""
@@ -245,7 +282,7 @@ def gen_accordion(fila, cfg):
     for item in items_cfg:
         tit = _esc(_val(fila, item.get("titulo","")) or item.get("titulo_fijo",""))
         txt = _esc(_val(fila, item.get("desc","")) or item.get("desc_fija",""))
-        u   = _url(_val(fila, item.get("img","")))
+        u   = _img_url(fila, item.get("img",""))
         img = f'<img src="{u}" style="max-width:320px;margin-bottom:12px;border-radius:4px"/>' if u else ""
         out += (
             f'<div style="border-bottom:1px solid #e0e0d8">' +
@@ -262,7 +299,7 @@ def gen_grid(fila, cfg):
     titulo    = _esc(cfg.get("titulo_fijo","Características destacadas"))
     items_html = ""
     for item in items_cfg:
-        u    = _url(_val(fila, item.get("img","")))
+        u    = _img_url(fila, item.get("img",""))
         icon = item.get("icon_fijo","")
         tit  = _esc(_val(fila, item.get("titulo","")) or item.get("titulo_fijo",""))
         txt  = _esc(_val(fila, item.get("desc","")) or item.get("desc_fija",""))
@@ -379,10 +416,20 @@ def _prev(col, muestra, es_imagen=False):
     val = str(muestra.get(col,"") or "").strip()
     if not val:
         st.markdown('<div class="prev-vacio">↳ vacío en este producto</div>', unsafe_allow_html=True); return
-    url = _url(val)
-    if es_imagen and url: st.image(url, width=130)
-    elif _es_url(val): st.markdown(f'<div class="prev-txt" style="font-size:.7rem;word-break:break-all">↳ {val[:90]}</div>', unsafe_allow_html=True)
-    else: st.markdown(f'<div class="prev-txt">↳ {val[:100]}</div>', unsafe_allow_html=True)
+    if es_imagen:
+        sku   = str(muestra.get("SKU","")).strip()
+        u_cdn = _url_turaco(sku, col)
+        if u_cdn:
+            st.image(u_cdn, width=130)
+            st.markdown(f'<div class="prev-txt" style="font-size:.68rem;word-break:break-all">✅ CDN: {u_cdn}</div>', unsafe_allow_html=True)
+        else:
+            u_pl = _url(val)
+            if u_pl: st.image(u_pl, width=130)
+            st.markdown('<div class="prev-vacio">⚠️ Campo no en CDN — imagen puede no cargar en Cdiscount</div>', unsafe_allow_html=True)
+    elif _es_url(val):
+        st.markdown(f'<div class="prev-txt" style="font-size:.7rem;word-break:break-all">↳ {val[:90]}</div>', unsafe_allow_html=True)
+    else:
+        st.markdown(f'<div class="prev-txt">↳ {val[:100]}</div>', unsafe_allow_html=True)
 
 def _sel(label, key, opc, muestra, es_imagen=False):
     lst = ["(ninguno)"] + opc
