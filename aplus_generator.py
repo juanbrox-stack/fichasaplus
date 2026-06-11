@@ -280,16 +280,28 @@ def gen_grid(fila, cfg):
     )
 
 def gen_video(fila, cfg):
-    """Sin <iframe>: solo vídeo nativo mp4 o texto de enlace."""
+    """Omitido en el HTML exportado (iframe prohibido en Cdiscount)."""
+    return ""
+
+def gen_video_preview(fila, cfg):
+    """Solo para preview en la app — usa iframe permitido en st.components."""
     url = cfg.get("url_fija","") or _val(fila, cfg.get("url_campo",""))
     if not url: return ""
     caption = _esc(_val(fila, cfg.get("caption","")) or cfg.get("caption_fija",""))
-    if url.lower().endswith((".mp4",".webm",".ogg")):
-        media = f'<video src="{url}" controls playsinline style="width:100%;display:block"></video>'
+    if "youtube.com" in url or "youtu.be" in url:
+        vid = url.split("v=")[-1].split("&")[0] if "v=" in url else url.split("/")[-1].split("?")[0]
+        embed = f'<iframe src="https://www.youtube.com/embed/{vid}" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%;border:none"></iframe>'
+        wrapper = f'<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden">{embed}</div>'
+    elif "vimeo.com" in url:
+        vid = url.rstrip("/").split("/")[-1]
+        embed = f'<iframe src="https://player.vimeo.com/video/{vid}" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%;border:none"></iframe>'
+        wrapper = f'<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden">{embed}</div>'
+    elif url.lower().endswith((".mp4",".webm",".ogg")):
+        wrapper = f'<video src="{url}" controls playsinline style="width:100%;display:block"></video>'
     else:
-        media = f'<p style="padding:24px;color:{_S["light"]};font-size:.9rem">▶ {url}</p>'
+        wrapper = f'<p style="padding:24px;color:{_S["light"]};font-size:.9rem">▶ {url}</p>'
     cap = f'<p style="padding:16px 36px;background:#1a1a18;color:#c8c8c0;font-size:.9rem">{caption}</p>' if caption else ""
-    return f'<div style="{_S["wrap"]};{_S["border"]};background:{_S["dark"]}">{media}{cap}</div>'
+    return f'<div style="{_S["wrap"]};{_S["border"]};background:{_S["dark"]}">{wrapper}{cap}</div>'
 
 def gen_compare(fila, cfg):
     """Sin <table>: comparativa con divs en grid."""
