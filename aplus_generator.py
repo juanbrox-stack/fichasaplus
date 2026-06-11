@@ -683,6 +683,12 @@ def reconstruir_cfg_desde_session(bloques):
 if bloques:
     st.markdown('<div class="section"><h3>👁 Paso 3 — Preview y descarga</h3>', unsafe_allow_html=True)
     bloques_con_cfg = reconstruir_cfg_desde_session(bloques)
+    # ── Debug: mostrar qué valores se cogieron ──
+    with st.expander("🔍 Debug — valores de cfg reconstruidos", expanded=False):
+        for i, b in enumerate(bloques_con_cfg):
+            st.write(f"Bloque {i} ({b['tipo']}):", b.get("cfg",{}))
+        st.write("Session state keys b0:", {k:v for k,v in st.session_state.items() if k.startswith("b0")})
+    # ────────────────────────────────────────────
     frag         = sanitize_html(generar_aplus(muestra, bloques_con_cfg, preview=False))
     frag_preview = generar_aplus(muestra, bloques_con_cfg, preview=True)
 
