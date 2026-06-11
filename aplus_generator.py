@@ -327,13 +327,16 @@ GENERADORES = {
     "compare":   gen_compare,
 }
 
-def generar_aplus(fila: dict, bloques: list) -> str:
+def generar_aplus(fila: dict, bloques: list, preview: bool = False) -> str:
     partes = []
     mod_idx = 0
     for b in bloques:
         tipo = b.get("tipo","")
         cfg  = b.get("cfg", {})
-        fn   = GENERADORES.get(tipo)
+        if tipo == "video":
+            partes.append(gen_video_preview(fila, cfg) if preview else gen_video(fila, cfg))
+            continue
+        fn = GENERADORES.get(tipo)
         if not fn: continue
         if tipo == "modulo":
             partes.append(fn(fila, cfg, mod_idx))
