@@ -606,10 +606,85 @@ st.session_state["bloques_aplus"] = bloques
 st.markdown('</div>', unsafe_allow_html=True)
 
 # ── Paso 3 ────────────────────────────────────────────────────
+def reconstruir_cfg_desde_session(bloques):
+    """Lee los valores actuales de los widgets desde st.session_state y los vuelca en cfg."""
+    for i, bloque in enumerate(bloques):
+        tipo = bloque["tipo"]
+        cfg  = bloque.setdefault("cfg", {})
+        pfx  = f"b{i}"
+
+        def ss(key, default=""):
+            v = st.session_state.get(key, default)
+            return "" if v in ("(ninguno)", None) else str(v)
+
+        if tipo == "header":
+            cfg["img"]    = ss(f"{pfx}_img")
+            cfg["titulo"] = ss(f"{pfx}_tit")
+            cfg["desc"]   = ss(f"{pfx}_desc")
+        elif tipo == "modulo":
+            cfg["img"]    = ss(f"{pfx}_img")
+            cfg["titulo"] = ss(f"{pfx}_tit")
+            cfg["desc"]   = ss(f"{pfx}_desc")
+        elif tipo == "specs":
+            cfg["titulo_fijo"] = ss(f"{pfx}_tit_fijo", "Caractéristiques")
+            cfg["campos"]      = st.session_state.get(f"{pfx}_campos", [])
+        elif tipo == "video":
+            cfg["url_campo"]  = ss(f"{pfx}_url_campo")
+            cfg["url_fija"]   = ss(f"{pfx}_url_fija")
+            cfg["caption"]    = ss(f"{pfx}_cap")
+        elif tipo == "carrusel":
+            n = int(st.session_state.get(f"{pfx}_n", 2))
+            cfg["slides"] = [
+                {"img": ss(f"{pfx}_s{si}_img"),
+                 "titulo_fijo": ss(f"{pfx}_s{si}_tit"),
+                 "desc_fija":   ss(f"{pfx}_s{si}_desc")}
+                for si in range(n)
+            ]
+        elif tipo == "tabs":
+            n = int(st.session_state.get(f"{pfx}_n", 2))
+            cfg["tabs"] = [
+                {"label_fijo": ss(f"{pfx}_t{ti}_label"),
+                 "img":        ss(f"{pfx}_t{ti}_img"),
+                 "titulo":     ss(f"{pfx}_t{ti}_tit"),
+                 "desc":       ss(f"{pfx}_t{ti}_desc")}
+                for ti in range(n)
+            ]
+        elif tipo == "accordion":
+            n = int(st.session_state.get(f"{pfx}_n", 2))
+            cfg["items"] = [
+                {"titulo_fijo": ss(f"{pfx}_a{ai}_tit"),
+                 "titulo":      ss(f"{pfx}_a{ai}_tit_c"),
+                 "desc":        ss(f"{pfx}_a{ai}_desc"),
+                 "img":         ss(f"{pfx}_a{ai}_img")}
+                for ai in range(n)
+            ]
+        elif tipo == "grid":
+            cfg["titulo_fijo"] = ss(f"{pfx}_gtit", "Características destacadas")
+            n = int(st.session_state.get(f"{pfx}_n", 2))
+            cfg["items"] = [
+                {"icon_fijo":   ss(f"{pfx}_g{gi}_ico"),
+                 "img":         ss(f"{pfx}_g{gi}_img"),
+                 "titulo_fijo": ss(f"{pfx}_g{gi}_tit"),
+                 "desc_fija":   ss(f"{pfx}_g{gi}_desc")}
+                for gi in range(n)
+            ]
+        elif tipo == "compare":
+            cfg["titulo_fijo"] = ss(f"{pfx}_ctit", "Comparaison")
+            n_cols = int(st.session_state.get(f"{pfx}_nc", 2))
+            n_rows = int(st.session_state.get(f"{pfx}_nr", 3))
+            cfg["columnas"] = [{"label": ss(f"{pfx}_cc{ci}")} for ci in range(n_cols)]
+            cfg["filas"]    = [
+                {"label":   ss(f"{pfx}_rf{ri}"),
+                 "valores": [ss(f"{pfx}_rv{ri}_{ci}") for ci in range(n_cols)]}
+                for ri in range(n_rows)
+            ]
+    return bloques
+
 if bloques:
     st.markdown('<div class="section"><h3>👁 Paso 3 — Preview y descarga</h3>', unsafe_allow_html=True)
-    frag         = sanitize_html(generar_aplus(muestra, bloques, preview=False))
-    frag_preview = generar_aplus(muestra, bloques, preview=True)
+    bloques_con_cfg = reconstruir_cfg_desde_session(bloques)
+    frag         = sanitize_html(generar_aplus(muestra, bloques_con_cfg, preview=False))
+    frag_preview = generar_aplus(muestra, bloques_con_cfg, preview=True)
 
     with st.expander(f"👁 Preview — {sku_sel}", expanded=True):
         st.components.v1.html(
@@ -633,7 +708,7 @@ if bloques:
 
     if st.button("⚡ Generar ZIP — todos los productos", key="btn_zip"):
         with st.spinner("Generando..."):
-            st.session_state["zip_aplus"]   = generar_zip(df, bloques)
+            st.session_state["zip_aplus"]   = generar_zip(df, bloques_con_cfg)
             st.session_state["zip_aplus_n"] = len(df)
 
     if st.session_state.get("zip_aplus"):
