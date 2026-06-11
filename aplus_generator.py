@@ -38,53 +38,21 @@ div[role="radiogroup"] label p{{color:{CC_F}!important}}
 # ══════════════════════════════════════════════════════════════
 # CSS + JS GLOBAL DEL HTML GENERADO
 # ══════════════════════════════════════════════════════════════
-# ── CSS mínimo por tipo de módulo (se incluye solo si el módulo está en uso) ──
+# ── Constante de límite ──────────────────────────────────────
 LIMIT = 5000
 
-CSS_BASE = "*{box-sizing:border-box;margin:0;padding:0}body{font-family:Arial,sans-serif;color:#111;background:#fff;max-width:970px;margin:auto}img{max-width:100%;display:block}"
+# Etiquetas prohibidas por Cdiscount: html, head, body, script,
+# link, style, iframe, table, a → todo con estilos INLINE, sin JS
 
-CSS_POR_TIPO = {
-    "header":    ".ap-header{display:flex;flex-direction:column}.ap-header-img{width:100%;overflow:hidden;max-height:480px}.ap-header-img img{width:100%;height:100%;object-fit:cover}.ap-header-text{background:#141413;color:#FAF9F5;padding:32px 36px}.ap-header-text h1{font-size:1.5rem;font-weight:700;line-height:1.3;margin-bottom:12px;color:#FAF9F5}.ap-header-text p{font-size:.95rem;line-height:1.7;color:#c8c8c0}",
-    "modulo":    ".ap-module{display:flex;align-items:stretch;border-top:3px solid #3EB1C8;height:340px}.ap-module-rev{flex-direction:row-reverse}.ap-module-img{width:45%;overflow:hidden;flex-shrink:0}.ap-module-img img{width:100%;height:100%;object-fit:cover}.ap-module-text{flex:1;padding:32px 36px;display:flex;flex-direction:column;justify-content:center}.ap-module-text h2{font-size:1.1rem;font-weight:700;color:#141413;margin-bottom:12px}.ap-module-text p{font-size:.92rem;line-height:1.75;color:#444}.ap-accent{width:36px;height:3px;background:#3EB1C8;margin-bottom:14px}",
-    "carrusel":  ".ap-carousel{position:relative;border-top:3px solid #3EB1C8;overflow:hidden}.ap-carousel-track{display:flex;transition:transform .35s ease}.ap-carousel-slide{min-width:100%;position:relative}.ap-carousel-slide img{width:100%;height:420px;object-fit:cover}.ap-carousel-caption{position:absolute;bottom:0;left:0;right:0;background:rgba(20,20,19,.72);color:#FAF9F5;padding:18px 28px}.ap-carousel-caption h3{font-size:1rem;font-weight:700;margin-bottom:6px}.ap-carousel-caption p{font-size:.85rem;color:#ddd}.ap-carousel-btn{position:absolute;top:50%;transform:translateY(-50%);background:rgba(62,177,200,.85);border:none;color:#fff;width:44px;height:44px;border-radius:50%;cursor:pointer;z-index:10}.ap-carousel-prev{left:14px}.ap-carousel-next{right:14px}.ap-carousel-dots{display:flex;justify-content:center;gap:8px;padding:14px 0}.ap-carousel-dot{width:8px;height:8px;border-radius:50%;background:#ccc;cursor:pointer;border:none}.ap-carousel-dot.active{background:#3EB1C8}",
-    "tabs":      ".ap-tabs{border-top:3px solid #3EB1C8}.ap-tabs-nav{display:flex;background:#141413;overflow-x:auto}.ap-tabs-nav-btn{flex:1;padding:16px 20px;background:none;border:none;color:#c8c8c0;font-size:.88rem;font-weight:600;cursor:pointer;border-bottom:3px solid transparent}.ap-tabs-nav-btn.active{color:#FAF9F5;border-bottom-color:#3EB1C8}.ap-tab-panel{display:none;flex-direction:row;min-height:300px}.ap-tab-panel.active{display:flex}.ap-tab-panel-img{width:45%;overflow:hidden;flex-shrink:0}.ap-tab-panel-img img{width:100%;height:100%;object-fit:cover}.ap-tab-panel-text{flex:1;padding:32px 36px;display:flex;flex-direction:column;justify-content:center}.ap-tab-panel-text h3{font-size:1.1rem;font-weight:700;margin-bottom:12px;color:#141413}.ap-tab-panel-text p{font-size:.92rem;line-height:1.75;color:#444}",
-    "accordion": ".ap-accordion{border-top:3px solid #3EB1C8}.ap-accordion-item{border-bottom:1px solid #e0e0d8}.ap-accordion-btn{width:100%;background:#fff;border:none;padding:20px 24px;text-align:left;font-size:.95rem;font-weight:700;color:#141413;cursor:pointer;display:flex;justify-content:space-between;align-items:center}.ap-accordion-icon{font-size:1.2rem;color:#3EB1C8;transition:transform .25s}.ap-accordion-panel{max-height:0;overflow:hidden;transition:max-height .3s ease}.ap-accordion-panel.open{max-height:600px}.ap-accordion-body{padding:0 24px 20px;font-size:.9rem;line-height:1.75;color:#444}",
-    "grid":      ".ap-grid{border-top:3px solid #3EB1C8;padding:40px 36px;background:#FAF9F5}.ap-grid h2{font-size:1rem;font-weight:700;text-transform:uppercase;color:#141413;margin-bottom:28px;text-align:center}.ap-grid-items{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:24px}.ap-grid-item{text-align:center;padding:20px 12px;background:#fff;border-radius:10px;border:1px solid #e8e8e0}.ap-grid-icon{font-size:2rem;margin-bottom:12px}.ap-grid-item h4{font-size:.82rem;font-weight:700;color:#141413;margin-bottom:6px}.ap-grid-item p{font-size:.78rem;color:#666;line-height:1.5}",
-    "video":     ".ap-video{border-top:3px solid #3EB1C8;background:#141413}.ap-video-embed{position:relative;padding-bottom:56.25%;height:0;overflow:hidden}.ap-video-embed iframe,.ap-video-embed video{position:absolute;top:0;left:0;width:100%;height:100%;border:none;object-fit:cover}.ap-video-caption{padding:20px 36px;background:#1a1a18}.ap-video-caption p{font-size:.9rem;color:#c8c8c0}",
-    "compare":   ".ap-compare{border-top:3px solid #3EB1C8;padding:40px 36px;overflow-x:auto}.ap-compare h2{font-size:1rem;font-weight:700;text-transform:uppercase;color:#141413;margin-bottom:24px}.ap-compare table{width:100%;border-collapse:collapse;min-width:500px}.ap-compare th{background:#141413;color:#FAF9F5;padding:14px 18px;text-align:left;font-size:.85rem;font-weight:700}.ap-compare th:first-child{background:#3EB1C8;color:#141413}.ap-compare td{padding:12px 18px;font-size:.85rem;color:#333;border-bottom:1px solid #eee}.ap-compare tr:nth-child(even) td{background:#f9f9f7}.ap-compare td:first-child{font-weight:700;color:#141413}",
-    "specs":     ".ap-specs{background:#FAF9F5;padding:40px 36px;border-top:3px solid #3EB1C8}.ap-specs h2{font-size:1rem;font-weight:700;text-transform:uppercase;color:#141413;margin-bottom:24px}.ap-specs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}.ap-spec-item{padding:14px 16px;border-bottom:1px solid #e0e0d8;display:flex;align-items:baseline;gap:10px}.ap-spec-item:nth-child(odd){background:#fff}.ap-spec-bullet{width:6px;height:6px;border-radius:50%;background:#3EB1C8;flex-shrink:0;margin-top:6px}.ap-spec-text{font-size:.88rem;color:#333;line-height:1.5}",
+# ── Estilos inline compartidos ───────────────────────────────
+_S = {
+    "wrap":    "max-width:970px;margin:auto;font-family:Arial,sans-serif;color:#111",
+    "accent":  "width:36px;height:3px;background:#3EB1C8;margin-bottom:14px",
+    "border":  "border-top:3px solid #3EB1C8",
+    "turq":    "#3EB1C8",
+    "dark":    "#141413",
+    "light":   "#FAF9F5",
 }
-
-JS_POR_TIPO = {
-    "carrusel":  "function apC(id){var t=document.querySelector('#'+id+' .ap-carousel-track'),s=t.querySelectorAll('.ap-carousel-slide'),d=document.querySelectorAll('#'+id+' .ap-carousel-dot'),c=0;function g(n){c=(n+s.length)%s.length;t.style.transform='translateX(-'+c*100+'%)';d.forEach(function(x,i){x.classList.toggle('active',i===c)})}document.querySelector('#'+id+' .ap-carousel-prev').onclick=function(){g(c-1)};document.querySelector('#'+id+' .ap-carousel-next').onclick=function(){g(c+1)};d.forEach(function(x,i){x.onclick=function(){g(i)}})}",
-    "tabs":      "function apT(id){var b=document.querySelectorAll('#'+id+' .ap-tabs-nav-btn'),p=document.querySelectorAll('#'+id+' .ap-tab-panel');b.forEach(function(btn,i){btn.onclick=function(){b.forEach(function(x){x.classList.remove('active')});p.forEach(function(x){x.classList.remove('active')});btn.classList.add('active');p[i].classList.add('active')}})}",
-    "accordion": "function apA(id){document.querySelectorAll('#'+id+' .ap-accordion-btn').forEach(function(btn){btn.onclick=function(){var p=btn.nextElementSibling,ic=btn.querySelector('.ap-accordion-icon'),o=p.classList.toggle('open');ic.style.transform=o?'rotate(45deg)':''}})}",
-}
-
-JS_INIT_POR_TIPO = {
-    "carrusel":  "document.querySelectorAll('.ap-carousel').forEach(function(el){apC(el.id)});",
-    "tabs":      "document.querySelectorAll('.ap-tabs').forEach(function(el){apT(el.id)});",
-    "accordion": "document.querySelectorAll('.ap-accordion').forEach(function(el){apA(el.id)});",
-}
-
-def css_js_para_bloques(bloques: list) -> str:
-    """Genera solo el CSS y JS de los tipos de módulo presentes en el layout."""
-    tipos_usados = set(b.get("tipo","") for b in bloques)
-    css = "<style>" + CSS_BASE
-    for tipo in CSS_POR_TIPO:
-        if tipo in tipos_usados:
-            css += CSS_POR_TIPO[tipo]
-    css += "</style>"
-    js_fns   = "".join(JS_POR_TIPO[t]   for t in JS_POR_TIPO if t in tipos_usados)
-    js_inits = "".join(JS_INIT_POR_TIPO[t] for t in JS_INIT_POR_TIPO if t in tipos_usados)
-    if js_inits:
-        js_fns += f"window.addEventListener('load',function(){{{js_inits}}});"
-    return css + (f"<script>{js_fns}</script>" if js_fns else "")
-
-def calcular_chars(fila, bloques):
-    """Calcula el tamaño real del HTML generado para un producto."""
-    html = generar_aplus(fila, bloques)
-    return len(html)
 
 # ══════════════════════════════════════════════════════════════
 # HELPERS
@@ -105,20 +73,76 @@ def _uid():
     import random, string
     return "ap" + "".join(random.choices(string.ascii_lowercase, k=6))
 
-def _video_embed(url):
-    """Genera el embed correcto según el tipo de URL."""
-    if not url: return ""
-    if "youtube.com/watch" in url or "youtu.be/" in url:
-        vid = url.split("v=")[-1].split("&")[0] if "v=" in url else url.split("/")[-1].split("?")[0]
-        return f'<iframe src="https://www.youtube.com/embed/{vid}" allowfullscreen></iframe>'
-    if "vimeo.com" in url:
-        vid = url.rstrip("/").split("/")[-1]
-        return f'<iframe src="https://player.vimeo.com/video/{vid}" allowfullscreen></iframe>'
-    if url.endswith((".mp4",".webm",".ogg")):
-        return f'<video src="{url}" controls playsinline></video>'
-    return f'<iframe src="{url}" allowfullscreen></iframe>'
+
 
 def _val(fila, campo): return str(fila.get(campo, "") or "").strip()
+
+# Mapa de clases antiguas → estilos inline (fallback para versión desplegada)
+_CLASS_TO_STYLE = {
+    "ap-header":       "display:flex;flex-direction:column;max-width:970px;margin:auto;font-family:Arial,sans-serif",
+    "ap-header-img":   "width:100%;overflow:hidden;max-height:480px",
+    "ap-header-text":  "background:#141413;color:#FAF9F5;padding:32px 36px",
+    "ap-module":       "display:flex;align-items:stretch;border-top:3px solid #3EB1C8;min-height:300px;max-width:970px;margin:auto;font-family:Arial,sans-serif",
+    "ap-module-rev":   "display:flex;flex-direction:row-reverse;align-items:stretch;border-top:3px solid #3EB1C8;min-height:300px;max-width:970px;margin:auto;font-family:Arial,sans-serif",
+    "ap-module-img":   "width:45%;overflow:hidden;flex-shrink:0",
+    "ap-module-text":  "flex:1;padding:32px 36px;display:flex;flex-direction:column;justify-content:center",
+    "ap-accent":       "width:36px;height:3px;background:#3EB1C8;margin-bottom:14px",
+    "ap-specs":        "background:#FAF9F5;padding:40px 36px;border-top:3px solid #3EB1C8;max-width:970px;margin:auto;font-family:Arial,sans-serif",
+    "ap-spec-item":    "padding:12px 16px;border-bottom:1px solid #e0e0d8;display:flex;align-items:center;gap:10px",
+    "ap-spec-bullet":  "width:6px;height:6px;border-radius:50%;background:#3EB1C8;flex-shrink:0",
+    "ap-spec-text":    "font-size:.88rem;color:#333",
+    "ap-video":        "border-top:3px solid #3EB1C8;background:#141413;max-width:970px;margin:auto",
+    "ap-video-caption":"padding:16px 36px;background:#1a1a18",
+    "ap-grid":         "border-top:3px solid #3EB1C8;padding:36px;background:#FAF9F5;max-width:970px;margin:auto;font-family:Arial,sans-serif",
+    "ap-grid-items":   "display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:18px",
+    "ap-grid-item":    "text-align:center;padding:18px 10px;background:#fff;border-radius:10px;border:1px solid #e8e8e0",
+    "ap-compare":      "border-top:3px solid #3EB1C8;padding:36px;overflow-x:auto;max-width:970px;margin:auto;font-family:Arial,sans-serif",
+    "ap-carousel":     "border-top:3px solid #3EB1C8;padding:20px;overflow-x:auto;max-width:970px;margin:auto;font-family:Arial,sans-serif",
+    "ap-tabs":         "border-top:3px solid #3EB1C8;max-width:970px;margin:auto;font-family:Arial,sans-serif",
+    "ap-accordion":    "border-top:3px solid #3EB1C8;max-width:970px;margin:auto;font-family:Arial,sans-serif",
+    "ap-accordion-item":"border-bottom:1px solid #e0e0d8",
+}
+
+def sanitize_html(html: str) -> str:
+    """
+    Limpia el HTML para Cdiscount:
+    1. Elimina etiquetas prohibidas (style, script, iframe, a)
+    2. section → div
+    3. Convierte class="ap-*" a estilos inline (compatibilidad con versión antigua)
+    """
+    import re
+
+    # 1. Eliminar bloques prohibidos
+    html = re.sub(r"<style[^>]*>.*?</style>",  "", html, flags=re.DOTALL)
+    html = re.sub(r"<script[^>]*>.*?</script>","", html, flags=re.DOTALL)
+    html = re.sub(r"<iframe[^>]*>.*?</iframe>","", html, flags=re.DOTALL)
+    html = re.sub(r"<iframe[^>]*/>",           "", html)
+    html = re.sub(r"<a [^>]*>",  "", html)
+    html = re.sub(r"</a>",       "", html)
+
+    # 2. section → div
+    html = re.sub(r"<section([^>]*)>", lambda m: "<div" + m.group(1) + ">", html)
+    html = re.sub(r"</section>", "</div>", html)
+
+    # 3. class="ap-X ap-Y" → style="..." (convierte clases legacy a inline)
+    def reemplazar_clase(m):
+        tag    = m.group(1)   # nombre del tag
+        attrs  = m.group(2)   # atributos
+        clases = re.findall(r'class="([^"]*)"', attrs)
+        if not clases:
+            return m.group(0)
+        nombres = clases[0].split()
+        estilos = " ".join(_CLASS_TO_STYLE.get(c, "") for c in nombres if c in _CLASS_TO_STYLE)
+        attrs_sin_class = re.sub(r'class="[^"]*"', "", attrs).strip()
+        if estilos:
+            return "<" + tag + ' style="' + estilos + '" ' + attrs_sin_class + ">"
+        return "<" + tag + " " + attrs_sin_class + ">"
+
+    html = re.sub(r"<(div|span|h[1-6]|p|img|figure)(\s[^>]*)?>",
+                  lambda m: reemplazar_clase(m) if m.group(2) and "class=" in m.group(2) else m.group(0),
+                  html)
+
+    return html.strip()
 def _img_tag(fila, campo, alt=""):
     u = _url(_val(fila, campo))
     return f'<img src="{u}" alt="{_esc(alt)}" loading="lazy"/>' if u else ""
@@ -127,119 +151,168 @@ def _img_tag(fila, campo, alt=""):
 # GENERADORES POR TIPO DE MÓDULO
 # ══════════════════════════════════════════════════════════════
 def gen_header(fila, cfg):
-    img = _img_tag(fila, cfg.get("img",""))
+    u   = _url(_val(fila, cfg.get("img","")))
     nom = _esc(_val(fila, cfg.get("titulo","")))
-    desc= _esc(_val(fila, cfg.get("desc","")))
-    return f'<section class="ap-header"><div class="ap-header-img">{img}</div><div class="ap-header-text"><h1>{nom}</h1><p>{desc}</p></div></section>'
+    dsc = _esc(_val(fila, cfg.get("desc","")))
+    img = f'<img src="{u}" style="width:100%;height:100%;object-fit:cover" loading="lazy"/>' if u else ""
+    return (
+        f'<div style="{_S["wrap"]}">' +
+        f'<div style="width:100%;overflow:hidden;max-height:480px">{img}</div>' +
+        f'<div style="background:{_S["dark"]};color:{_S["light"]};padding:32px 36px">' +
+        f'<h1 style="font-size:1.5rem;font-weight:700;line-height:1.3;margin-bottom:12px;color:{_S["light"]}">{nom}</h1>' +
+        f'<p style="font-size:.95rem;line-height:1.7;color:#c8c8c0">{dsc}</p></div></div>'
+    )
 
 def gen_modulo(fila, cfg, idx):
-    img  = _img_tag(fila, cfg.get("img",""))
-    tit  = _esc(_val(fila, cfg.get("titulo","")))
-    txt  = _esc(_val(fila, cfg.get("desc","")))
-    rev  = "ap-module-rev" if idx % 2 == 1 else ""
-    return f'<section class="ap-module {rev}"><div class="ap-module-img">{img}</div><div class="ap-module-text"><div class="ap-accent"></div><h2>{tit}</h2><p>{txt}</p></div></section>'
+    u   = _url(_val(fila, cfg.get("img","")))
+    tit = _esc(_val(fila, cfg.get("titulo","")))
+    txt = _esc(_val(fila, cfg.get("desc","")))
+    img = f'<img src="{u}" style="width:100%;height:100%;object-fit:cover" loading="lazy"/>' if u else ""
+    row = "row-reverse" if idx % 2 == 1 else "row"
+    return (
+        f'<div style="{_S["wrap"]};display:flex;flex-direction:{row};align-items:stretch;{_S["border"]};min-height:300px">' +
+        f'<div style="width:45%;overflow:hidden;flex-shrink:0">{img}</div>' +
+        f'<div style="flex:1;padding:32px 36px;display:flex;flex-direction:column;justify-content:center">' +
+        f'<div style="{_S["accent"]}"></div>' +
+        f'<h2 style="font-size:1.1rem;font-weight:700;color:{_S["dark"]};margin-bottom:12px">{tit}</h2>' +
+        f'<p style="font-size:.92rem;line-height:1.75;color:#444">{txt}</p></div></div>'
+    )
 
 def gen_specs(fila, cfg):
-    items = ""
-    for campo in cfg.get("campos", []):
+    titulo = _esc(cfg.get("titulo_fijo","Caractéristiques"))
+    items  = ""
+    for i, campo in enumerate(cfg.get("campos",[])):
         v = _val(fila, campo)
-        if v and not _es_url(v):
-            items += f'<div class="ap-spec-item"><div class="ap-spec-bullet"></div><span class="ap-spec-text">{_esc(v)}</span></div>'
-    titulo = _esc(cfg.get("titulo_fijo", "Caractéristiques"))
-    return f'<section class="ap-specs"><h2>{titulo}</h2><div class="ap-specs-grid">{items}</div></section>' if items else ""
+        if not v or _es_url(v): continue
+        bg = "#fff" if i%2==0 else "#f9f9f7"
+        items += (
+            f'<div style="padding:12px 16px;border-bottom:1px solid #e0e0d8;display:flex;align-items:center;gap:10px;background:{bg}">' +
+            f'<div style="width:6px;height:6px;border-radius:50%;background:{_S["turq"]};flex-shrink:0"></div>' +
+            f'<span style="font-size:.88rem;color:#333">{_esc(v)}</span></div>'
+        )
+    if not items: return ""
+    return (
+        f'<div style="{_S["wrap"]};background:{_S["light"]};padding:40px 36px;{_S["border"]}">' +
+        f'<h2 style="font-size:1rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:{_S["dark"]};margin-bottom:24px">{titulo}</h2>' +
+        f'{items}</div>'
+    )
 
 def gen_carrusel(fila, cfg):
-    slides_cfg = cfg.get("slides", [])
+    """Sin JS interactivo — muestra slides como grid estático."""
+    slides_cfg = cfg.get("slides",[])
     if not slides_cfg: return ""
-    uid = _uid()
-    slides_html = dots_html = ""
-    for i, s in enumerate(slides_cfg):
-        img = _img_tag(fila, s.get("img",""))
+    items = ""
+    for s in slides_cfg:
+        u   = _url(_val(fila, s.get("img","")))
         tit = _esc(_val(fila, s.get("titulo","")) or s.get("titulo_fijo",""))
         txt = _esc(_val(fila, s.get("desc","")) or s.get("desc_fija",""))
-        cap = f'<div class="ap-carousel-caption"><h3>{tit}</h3><p>{txt}</p></div>' if tit or txt else ""
-        slides_html += f'<div class="ap-carousel-slide">{img}{cap}</div>'
-        dots_html   += f'<button class="ap-carousel-dot {"active" if i==0 else ""}"></button>'
-    return f'''<div class="ap-carousel" id="{uid}">
-  <div class="ap-carousel-track">{slides_html}</div>
-  <button class="ap-carousel-btn ap-carousel-prev">&#8592;</button>
-  <button class="ap-carousel-btn ap-carousel-next">&#8594;</button>
-  <div class="ap-carousel-dots">{dots_html}</div>
-</div>'''
+        img = f'<img src="{u}" style="width:100%;height:240px;object-fit:cover;display:block"/>' if u else ""
+        cap = (f'<div style="background:rgba(20,20,19,.8);color:{_S["light"]};padding:14px 20px">' +
+               f'<h3 style="font-size:.95rem;font-weight:700;margin-bottom:6px">{tit}</h3>' +
+               f'<p style="font-size:.82rem;color:#ddd">{txt}</p></div>') if tit or txt else ""
+        items += f'<div style="position:relative;flex:0 0 auto;width:300px;overflow:hidden;border-radius:4px">{img}{cap}</div>'
+    return (
+        f'<div style="{_S["wrap"]};{_S["border"]};padding:20px;overflow-x:auto">' +
+        f'<div style="display:flex;gap:16px;width:max-content">{items}</div></div>'
+    )
 
 def gen_tabs(fila, cfg):
-    tabs_cfg = cfg.get("tabs", [])
+    """Sin JS — pestañas como secciones apiladas con título destacado."""
+    tabs_cfg = cfg.get("tabs",[])
     if not tabs_cfg: return ""
-    uid = _uid()
-    nav = content = ""
+    out = f'<div style="{_S["wrap"]};{_S["border"]}">'
     for i, t in enumerate(tabs_cfg):
-        label = _esc(_val(fila, t.get("label","")) or t.get("label_fijo", f"Tab {i+1}"))
-        img   = _img_tag(fila, t.get("img",""))
+        label = _esc(_val(fila, t.get("label","")) or t.get("label_fijo",f"Tab {i+1}"))
+        u     = _url(_val(fila, t.get("img","")))
         tit   = _esc(_val(fila, t.get("titulo","")) or t.get("titulo_fijo",""))
         txt   = _esc(_val(fila, t.get("desc","")) or t.get("desc_fija",""))
-        nav     += f'<button class="ap-tabs-nav-btn {"active" if i==0 else ""}">{label}</button>'
-        content += f'<div class="ap-tab-panel {"active" if i==0 else ""}"><div class="ap-tab-panel-img">{img}</div><div class="ap-tab-panel-text"><h3>{tit}</h3><p>{txt}</p></div></div>'
-    return f'<div class="ap-tabs" id="{uid}"><div class="ap-tabs-nav">{nav}</div><div class="ap-tabs-content">{content}</div></div>'
+        img   = f'<img src="{u}" style="width:45%;height:100%;object-fit:cover;flex-shrink:0"/>' if u else ""
+        bt    = "#3EB1C8" if i==0 else "#1e1e1c"
+        out  += (
+            f'<div style="background:{bt};color:{_S["light"]};padding:10px 20px;font-size:.88rem;font-weight:700">{label}</div>' +
+            f'<div style="display:flex;min-height:260px;border-bottom:1px solid #e0e0d8">{img}' +
+            f'<div style="flex:1;padding:28px 32px;display:flex;flex-direction:column;justify-content:center">' +
+            f'<h3 style="font-size:1.05rem;font-weight:700;margin-bottom:10px;color:{_S["dark"]}">{tit}</h3>' +
+            f'<p style="font-size:.9rem;line-height:1.75;color:#444">{txt}</p></div></div>'
+        )
+    return out + "</div>"
 
 def gen_accordion(fila, cfg):
-    items_cfg = cfg.get("items", [])
+    """Sin JS — acordeón como lista de secciones colapsadas visualmente."""
+    items_cfg = cfg.get("items",[])
     if not items_cfg: return ""
-    uid = _uid()
-    items_html = ""
+    out = f'<div style="{_S["wrap"]};{_S["border"]}">'
     for item in items_cfg:
         tit = _esc(_val(fila, item.get("titulo","")) or item.get("titulo_fijo",""))
         txt = _esc(_val(fila, item.get("desc","")) or item.get("desc_fija",""))
-        img = _img_tag(fila, item.get("img",""))
-        img_html = f'<div>{img}</div>' if img else ""
-        items_html += f'''<div class="ap-accordion-item">
-  <button class="ap-accordion-btn">{tit}<span class="ap-accordion-icon">+</span></button>
-  <div class="ap-accordion-panel"><div class="ap-accordion-body">{img_html}<p>{txt}</p></div></div>
-</div>'''
-    return f'<div class="ap-accordion" id="{uid}">{items_html}</div>'
+        u   = _url(_val(fila, item.get("img","")))
+        img = f'<img src="{u}" style="max-width:320px;margin-bottom:12px;border-radius:4px"/>' if u else ""
+        out += (
+            f'<div style="border-bottom:1px solid #e0e0d8">' +
+            f'<div style="padding:18px 24px;font-size:.95rem;font-weight:700;color:{_S["dark"]};background:#fff;display:flex;justify-content:space-between">' +
+            f'{tit}<span style="color:{_S["turq"]}">+</span></div>' +
+            f'<div style="padding:0 24px 18px;font-size:.9rem;line-height:1.75;color:#444;background:#fafaf8">{img}<p>{txt}</p></div>' +
+            f'</div>'
+        )
+    return out + "</div>"
 
 def gen_grid(fila, cfg):
-    items_cfg = cfg.get("items", [])
+    items_cfg = cfg.get("items",[])
     if not items_cfg: return ""
-    titulo = _esc(cfg.get("titulo_fijo","Características destacadas"))
+    titulo    = _esc(cfg.get("titulo_fijo","Características destacadas"))
     items_html = ""
     for item in items_cfg:
-        img  = _img_tag(fila, item.get("img",""))
+        u    = _url(_val(fila, item.get("img","")))
         icon = item.get("icon_fijo","")
         tit  = _esc(_val(fila, item.get("titulo","")) or item.get("titulo_fijo",""))
         txt  = _esc(_val(fila, item.get("desc","")) or item.get("desc_fija",""))
-        icono_html = img or (f'<div class="ap-grid-icon">{icon}</div>' if icon else "")
-        items_html += f'<div class="ap-grid-item">{icono_html}<h4>{tit}</h4><p>{txt}</p></div>'
-    return f'<section class="ap-grid"><h2>{titulo}</h2><div class="ap-grid-items">{items_html}</div></section>'
+        ico  = (f'<img src="{u}" style="width:60px;height:60px;object-fit:contain;margin:0 auto 12px;display:block"/>' if u
+                else f'<div style="font-size:2rem;margin-bottom:12px;text-align:center">{icon}</div>' if icon else "")
+        items_html += (
+            f'<div style="text-align:center;padding:18px 10px;background:#fff;border-radius:10px;border:1px solid #e8e8e0">' +
+            f'{ico}<h4 style="font-size:.82rem;font-weight:700;color:{_S["dark"]};margin-bottom:6px">{tit}</h4>' +
+            f'<p style="font-size:.78rem;color:#666;line-height:1.5">{txt}</p></div>'
+        )
+    return (
+        f'<div style="{_S["wrap"]};{_S["border"]};padding:36px;background:{_S["light"]}">' +
+        f'<h2 style="font-size:1rem;font-weight:700;text-transform:uppercase;color:{_S["dark"]};margin-bottom:24px;text-align:center">{titulo}</h2>' +
+        f'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:18px">{items_html}</div></div>'
+    )
 
 def gen_video(fila, cfg):
-    url_campo = _val(fila, cfg.get("url_campo",""))
-    url_fija  = cfg.get("url_fija","")
-    url = url_fija or url_campo
+    """Sin <iframe>: solo vídeo nativo mp4 o texto de enlace."""
+    url = cfg.get("url_fija","") or _val(fila, cfg.get("url_campo",""))
     if not url: return ""
-    embed = _video_embed(url)
     caption = _esc(_val(fila, cfg.get("caption","")) or cfg.get("caption_fija",""))
-    cap_html = f'<div class="ap-video-caption"><p>{caption}</p></div>' if caption else ""
-    return f'<section class="ap-video"><div class="ap-video-embed">{embed}</div>{cap_html}</section>'
+    if url.lower().endswith((".mp4",".webm",".ogg")):
+        media = f'<video src="{url}" controls playsinline style="width:100%;display:block"></video>'
+    else:
+        media = f'<p style="padding:24px;color:{_S["light"]};font-size:.9rem">▶ {url}</p>'
+    cap = f'<p style="padding:16px 36px;background:#1a1a18;color:#c8c8c0;font-size:.9rem">{caption}</p>' if caption else ""
+    return f'<div style="{_S["wrap"]};{_S["border"]};background:{_S["dark"]}">{media}{cap}</div>'
 
 def gen_compare(fila, cfg):
-    cols_cfg = cfg.get("columnas", [])  # [{label, campos:[campo1,campo2,...]}]
-    filas_cfg = cfg.get("filas", [])    # [{label, valores:[val1,val2,...]}]
+    """Sin <table>: comparativa con divs en grid."""
+    cols_cfg  = cfg.get("columnas",[])
+    filas_cfg = cfg.get("filas",[])
     if not cols_cfg and not filas_cfg: return ""
-    titulo = _esc(cfg.get("titulo_fijo","Comparaison des modèles"))
-    # Cabecera
-    ths = "<th>Característica</th>" + "".join(f'<th>{_esc(c.get("label",""))}</th>' for c in cols_cfg)
-    # Filas de datos
+    titulo = _esc(cfg.get("titulo_fijo","Comparaison"))
+    n      = len(cols_cfg)+1
+    head   = f'<div style="background:{_S["turq"]};color:{_S["dark"]};padding:11px 14px;font-size:.82rem;font-weight:700">Caractéristique</div>'
+    head  += "".join(f'<div style="background:{_S["dark"]};color:{_S["light"]};padding:11px 14px;font-size:.82rem;font-weight:700">{_esc(c.get("label",""))}</div>' for c in cols_cfg)
     rows = ""
-    for f in filas_cfg:
-        tds = f'<td>{_esc(f.get("label",""))}</td>'
-        for i, c in enumerate(cols_cfg):
-            val_campo = _val(fila, c.get("campos",[])[i]) if i < len(c.get("campos",[])) else ""
-            val_fijo  = f.get("valores",[""])[i] if i < len(f.get("valores",[])) else ""
-            v = val_fijo or val_campo
-            cls = "yes" if v.lower() in ("sí","si","yes","oui","✓","✔") else ("no" if v.lower() in ("no","non","✗","✘") else "")
-            tds += f'<td class="{cls}">{_esc(v)}</td>'
-        rows += f'<tr>{tds}</tr>'
-    return f'<section class="ap-compare"><h2>{titulo}</h2><table><thead><tr>{ths}</tr></thead><tbody>{rows}</tbody></table></section>'
+    for ri, f in enumerate(filas_cfg):
+        bg = "#fff" if ri%2==0 else "#f9f9f7"
+        rows += f'<div style="background:#f0f0ea;padding:10px 14px;font-size:.84rem;font-weight:700;color:{_S["dark"]}">{_esc(f.get("label",""))}</div>'
+        for i in range(len(cols_cfg)):
+            v   = f.get("valores",[""])[i] if i < len(f.get("valores",[])) else ""
+            col = "#27ae60" if v.lower() in ("sí","si","yes","oui","✓") else ("#aaa" if v.lower() in ("no","non","✗") else "#333")
+            rows += f'<div style="background:{bg};padding:10px 14px;font-size:.84rem;color:{col}">{_esc(v)}</div>'
+    return (
+        f'<div style="{_S["wrap"]};{_S["border"]};padding:36px">' +
+        f'<h2 style="font-size:1rem;font-weight:700;text-transform:uppercase;color:{_S["dark"]};margin-bottom:18px">{titulo}</h2>' +
+        f'<div style="display:grid;grid-template-columns:repeat({n},1fr);border:1px solid #e0e0d8;border-radius:6px;overflow:hidden">{head}{rows}</div></div>'
+    )
 
 # ── Dispatcher ────────────────────────────────────────────────
 GENERADORES = {
@@ -255,7 +328,7 @@ GENERADORES = {
 }
 
 def generar_aplus(fila: dict, bloques: list) -> str:
-    partes = [css_js_para_bloques(bloques)]
+    partes = []
     mod_idx = 0
     for b in bloques:
         tipo = b.get("tipo","")
@@ -274,7 +347,7 @@ def generar_zip(df, bloques):
     with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as zf:
         for _, fila in df.iterrows():
             sku  = str(fila.get("SKU","sin_sku")).strip().replace("/","_").replace(" ","_")
-            html = generar_aplus(fila.to_dict(), bloques)
+            html = sanitize_html(generar_aplus(fila.to_dict(), bloques, preview=False))
             zf.writestr(f"{sku}_aplus.html", html.encode("utf-8"))
     buf.seek(0)
     return buf.getvalue()
@@ -312,16 +385,17 @@ def _txt_fijo(label, key, placeholder=""):
 # UI — CONSTRUCTOR DE BLOQUES
 # ══════════════════════════════════════════════════════════════
 TIPOS = {
-    "header":    "🖼 Hero (imagen + título + desc)",
-    "modulo":    "📐 Texto · Imagen (alternado)",
-    "carrusel":  "🎠 Carrusel de imágenes",
-    "tabs":      "📑 Pestañas",
-    "accordion": "📂 Acordeón",
-    "grid":      "⬡ Grid de iconos",
-    "video":     "▶️ Vídeo",
+    "header":    "🖼 Hero",
+    "modulo":    "📐 Texto·Imagen",
+    "specs":     "📋 Specs",
+    "grid":      "⬡ Grid iconos",
     "compare":   "📊 Comparativa",
-    "specs":     "📋 Especificaciones",
+    "carrusel":  "🎠 Carrusel*",
+    "tabs":      "📑 Pestañas*",
+    "accordion": "📂 Acordeón*",
+    "video":     "▶️ Vídeo*",
 }
+# * = módulos adaptados (sin JS/iframe por restricciones del marketplace)
 
 def render_bloque_ui(idx, bloque, cols_img, cols_txt, muestra):
     tipo = bloque["tipo"]
@@ -495,6 +569,7 @@ for i, (tipo, label) in enumerate(TIPOS.items()):
 
 bloques = st.session_state.get("bloques_aplus", [])
 
+st.caption("* Carrusel, Pestañas y Acordeón se renderizan como layout estático (sin JS). Vídeo solo admite archivos .mp4 directos (sin YouTube/Vimeo por restricción de iframe).")
 if not bloques:
     st.info("Añade bloques desde los botones de arriba.")
 else:
@@ -518,14 +593,15 @@ st.markdown('</div>', unsafe_allow_html=True)
 # ── Paso 3 ────────────────────────────────────────────────────
 if bloques:
     st.markdown('<div class="section"><h3>👁 Paso 3 — Preview y descarga</h3>', unsafe_allow_html=True)
-    frag = generar_aplus(muestra, bloques)
+    frag         = sanitize_html(generar_aplus(muestra, bloques, preview=False))
+    frag_preview = generar_aplus(muestra, bloques, preview=True)
 
     with st.expander(f"👁 Preview — {sku_sel}", expanded=True):
         st.components.v1.html(
-            f"<!DOCTYPE html><html><head><meta charset='UTF-8'/></head><body style='background:#fff'>{frag}</body></html>",
+            f"<!DOCTYPE html><html><head><meta charset='UTF-8'/></head><body style='background:#fff'>{frag_preview}</body></html>",
             height=1000, scrolling=True)
 
-    # Contador de caracteres con semáforo de color
+    # Contador de caracteres con semáforo de color (sobre el HTML exportado, sin vídeo)
     n_chars = len(frag)
     pct     = n_chars / LIMIT * 100
     color   = "#27ae60" if pct < 75 else "#e8a020" if pct < 95 else "#e85c5c"
@@ -534,15 +610,9 @@ if bloques:
         f'<p style="font-size:.85rem;margin-bottom:6px"><span style="color:{color};font-weight:700">{n_chars:,} / {LIMIT:,} caracteres ({pct:.0f}%)</span>{aviso}</p>',
         unsafe_allow_html=True)
     if n_chars > LIMIT:
-        tipos_con_peso = sorted(
-            [(t, len(CSS_POR_TIPO.get(t,"")) + len(JS_POR_TIPO.get(t,"")))
-             for t in set(b["tipo"] for b in bloques)],
-            key=lambda x: -x[1])
-        st.error(
-            f"🚨 El HTML supera el límite de {LIMIT:,} caracteres en {n_chars-LIMIT:,} chars. "
-            f"Módulos más pesados: " +
-            ", ".join(f"**{t}** ({w} chars CSS/JS)" for t,w in tipos_con_peso[:3]))
-    st.markdown("**📋 Código HTML:**")
+        tipos_usados = [t for t in set(b["tipo"] for b in bloques) if t != "video"]
+        st.error(f"🚨 Supera el límite en {n_chars-LIMIT:,} chars. Elimina algún módulo.")
+    st.markdown("**📋 Código HTML para Cdiscount** (el vídeo solo aparece en el preview):")
     st.text_area("", value=frag, height=220, key="ta_aplus", label_visibility="collapsed")
     st.markdown("<br>", unsafe_allow_html=True)
 
