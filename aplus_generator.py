@@ -5,54 +5,65 @@ import zipfile
 from html import escape
 from urllib.parse import urlsplit, urlunsplit, quote
 
-st.set_page_config(page_title="A+ Content Generator · Amazon", page_icon="🌟", layout="wide")
+st.set_page_config(page_title="A+ Content Generator", page_icon="🌟", layout="wide")
 
-CC_TURQUESA = "#3EB1C8"
-CC_NEGRO    = "#141413"
-CC_FONDO    = "#FAF9F5"
+CC_T = "#3EB1C8"
+CC_N = "#141413"
+CC_F = "#FAF9F5"
 
 st.markdown(f"""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
-html,body,[class*="css"]{{font-family:'Inter',sans-serif;background:{CC_NEGRO};color:{CC_FONDO}}}
-.stApp{{background:{CC_NEGRO}}}
+html,body,[class*="css"]{{font-family:'Inter',sans-serif;background:{CC_N};color:{CC_F}}}
+.stApp{{background:{CC_N}}}
 #MainMenu,footer,header{{visibility:hidden}}
 .block-container{{padding:2rem 2.5rem 3rem!important;max-width:1400px!important}}
-.stButton>button{{background:{CC_TURQUESA}!important;color:{CC_NEGRO}!important;border:none!important;border-radius:8px!important;font-weight:700!important;width:100%!important}}
+.stButton>button{{background:{CC_T}!important;color:{CC_N}!important;border:none!important;border-radius:8px!important;font-weight:700!important;width:100%!important}}
 .stButton>button:hover{{background:#2d9db3!important}}
 label{{color:#c0c0b8!important;font-size:0.82rem!important;font-weight:600!important}}
-[data-baseweb="select"]>div{{background:#1e1e1c!important;border-color:#3a3a38!important;color:{CC_FONDO}!important}}
-div[role="radiogroup"] label p{{color:{CC_FONDO}!important}}
-.stProgress>div>div>div{{background:{CC_TURQUESA}!important}}
+[data-baseweb="select"]>div{{background:#1e1e1c!important;border-color:#3a3a38!important;color:{CC_F}!important}}
+div[role="radiogroup"] label p{{color:{CC_F}!important}}
+.stProgress>div>div>div{{background:{CC_T}!important}}
 .section{{background:#1e1e1c;border:1px solid #2e2e2c;border-radius:14px;padding:1.5rem 1.8rem;margin-bottom:1.2rem}}
-.section h3{{color:{CC_FONDO}!important;font-size:1rem;font-weight:700;margin:0 0 1rem 0}}
+.section h3{{color:{CC_F}!important;font-size:1rem;font-weight:700;margin:0 0 1rem 0}}
 .stat-box{{background:#1a1a1a;border:1px solid #2e2e2c;border-radius:10px;padding:1rem;text-align:center}}
-.stat-box .num{{font-size:1.8rem;font-weight:800;color:{CC_TURQUESA};display:block}}
+.stat-box .num{{font-size:1.8rem;font-weight:800;color:{CC_T};display:block}}
 .stat-box .lbl{{font-size:0.72rem;color:#888;text-transform:uppercase;letter-spacing:1.5px}}
-.prev-txt{{font-size:0.8rem;color:#444;background:#eeeee6;border-radius:6px;padding:5px 8px;border-left:3px solid {CC_TURQUESA};margin-top:5px;font-style:italic}}
+.prev-txt{{font-size:0.8rem;color:#444;background:#eeeee6;border-radius:6px;padding:5px 8px;border-left:3px solid {CC_T};margin-top:5px;font-style:italic}}
 .prev-vacio{{font-size:0.78rem;color:#999;margin-top:5px;font-style:italic}}
+.mod-badge{{display:inline-block;background:{CC_T};color:{CC_N};font-size:.72rem;font-weight:700;padding:2px 10px;border-radius:20px;margin-bottom:8px}}
 </style>
 """, unsafe_allow_html=True)
 
-# ── CSS del A+ ────────────────────────────────────────────────
-CSS_APLUS = """
+# ══════════════════════════════════════════════════════════════
+# CSS + JS GLOBAL DEL HTML GENERADO
+# ══════════════════════════════════════════════════════════════
+CSS_JS = """
+<style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:Arial,sans-serif;color:#111;background:#fff;max-width:970px;margin:auto}
-img{max-width:100%;display:block;object-fit:contain}
-.ap-header{display:flex;align-items:stretch;min-height:320px}
-.ap-header-img{width:45%;background:#f5f5f5;overflow:hidden}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+
+/* ── HEADER FULL WIDTH ───────────────────────────── */
+.ap-header{display:flex;flex-direction:column}
+.ap-header-img{width:100%;overflow:hidden;max-height:480px}
 .ap-header-img img{width:100%;height:100%;object-fit:cover}
-.ap-header-text{flex:1;background:#141413;color:#FAF9F5;padding:40px 36px;display:flex;flex-direction:column;justify-content:center}
-.ap-header-text h1{font-size:1.6rem;font-weight:700;line-height:1.3;margin-bottom:16px;color:#FAF9F5}
+.ap-header-text{background:#141413;color:#FAF9F5;padding:32px 36px}
+.ap-header-text h1{font-size:1.5rem;font-weight:700;line-height:1.3;margin-bottom:12px;color:#FAF9F5}
 .ap-header-text p{font-size:0.95rem;line-height:1.7;color:#c8c8c0}
-.ap-module{display:flex;align-items:stretch;border-top:3px solid #3EB1C8;min-height:260px}
+
+/* ── MÓDULO TEXTO+IMAGEN ─────────────────────────── */
+.ap-module{display:flex;align-items:stretch;border-top:3px solid #3EB1C8;height:340px}
 .ap-module-rev{flex-direction:row-reverse}
-.ap-module-img{width:42%;background:#f8f8f8;overflow:hidden;flex-shrink:0}
+.ap-module-img{width:45%;overflow:hidden;flex-shrink:0}
 .ap-module-img img{width:100%;height:100%;object-fit:cover}
-.ap-module-text{flex:1;padding:36px 32px;display:flex;flex-direction:column;justify-content:center}
-.ap-module-text h2{font-size:1.1rem;font-weight:700;color:#141413;margin-bottom:12px;text-transform:uppercase;letter-spacing:.06em}
+.ap-module-text{flex:1;padding:32px 36px;display:flex;flex-direction:column;justify-content:center;background:#fff}
+.ap-module-text h2{font-size:1.1rem;font-weight:700;color:#141413;margin-bottom:12px}
 .ap-module-text p{font-size:0.92rem;line-height:1.75;color:#444}
 .ap-accent{width:36px;height:3px;background:#3EB1C8;margin-bottom:14px}
+
+/* ── SPECS ───────────────────────────────────────── */
 .ap-specs{background:#FAF9F5;padding:40px 36px;border-top:3px solid #3EB1C8}
 .ap-specs h2{font-size:1rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#141413;margin-bottom:24px}
 .ap-specs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}
@@ -60,9 +71,130 @@ img{max-width:100%;display:block;object-fit:contain}
 .ap-spec-item:nth-child(odd){background:#fff}
 .ap-spec-bullet{width:6px;height:6px;border-radius:50%;background:#3EB1C8;flex-shrink:0;margin-top:6px}
 .ap-spec-text{font-size:0.88rem;color:#333;line-height:1.5}
+
+/* ── CARRUSEL ────────────────────────────────────── */
+.ap-carousel{position:relative;border-top:3px solid #3EB1C8;overflow:hidden;background:#f8f8f8;user-select:none}
+.ap-carousel-track{display:flex;transition:transform .35s ease}
+.ap-carousel-slide{min-width:100%;position:relative}
+.ap-carousel-slide img{width:100%;height:420px;object-fit:cover}
+.ap-carousel-caption{position:absolute;bottom:0;left:0;right:0;background:rgba(20,20,19,.72);color:#FAF9F5;padding:18px 28px}
+.ap-carousel-caption h3{font-size:1rem;font-weight:700;margin-bottom:6px}
+.ap-carousel-caption p{font-size:.85rem;line-height:1.5;color:#ddd}
+.ap-carousel-btn{position:absolute;top:50%;transform:translateY(-50%);background:rgba(62,177,200,.85);border:none;color:#fff;width:44px;height:44px;border-radius:50%;font-size:1.3rem;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:10}
+.ap-carousel-btn:hover{background:#3EB1C8}
+.ap-carousel-prev{left:14px}
+.ap-carousel-next{right:14px}
+.ap-carousel-dots{display:flex;justify-content:center;gap:8px;padding:14px 0;background:#fff}
+.ap-carousel-dot{width:8px;height:8px;border-radius:50%;background:#ccc;cursor:pointer;border:none}
+.ap-carousel-dot.active{background:#3EB1C8}
+
+/* ── PESTAÑAS ────────────────────────────────────── */
+.ap-tabs{border-top:3px solid #3EB1C8}
+.ap-tabs-nav{display:flex;background:#141413;overflow-x:auto}
+.ap-tabs-nav-btn{flex:1;padding:16px 20px;background:none;border:none;color:#c8c8c0;font-size:.88rem;font-weight:600;cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent;transition:.2s}
+.ap-tabs-nav-btn.active{color:#FAF9F5;border-bottom-color:#3EB1C8}
+.ap-tabs-nav-btn:hover{color:#FAF9F5}
+.ap-tabs-content .ap-tab-panel{display:none;flex-direction:row;min-height:300px}
+.ap-tabs-content .ap-tab-panel.active{display:flex}
+.ap-tab-panel-img{width:45%;overflow:hidden;flex-shrink:0}
+.ap-tab-panel-img img{width:100%;height:100%;object-fit:cover}
+.ap-tab-panel-text{flex:1;padding:32px 36px;display:flex;flex-direction:column;justify-content:center}
+.ap-tab-panel-text h3{font-size:1.1rem;font-weight:700;margin-bottom:12px;color:#141413}
+.ap-tab-panel-text p{font-size:.92rem;line-height:1.75;color:#444}
+
+/* ── ACORDEÓN ────────────────────────────────────── */
+.ap-accordion{border-top:3px solid #3EB1C8}
+.ap-accordion-item{border-bottom:1px solid #e0e0d8}
+.ap-accordion-btn{width:100%;background:#fff;border:none;padding:20px 24px;text-align:left;font-size:.95rem;font-weight:700;color:#141413;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+.ap-accordion-btn:hover{background:#f8f8f8}
+.ap-accordion-icon{font-size:1.2rem;color:#3EB1C8;transition:transform .25s;flex-shrink:0}
+.ap-accordion-panel{max-height:0;overflow:hidden;transition:max-height .3s ease}
+.ap-accordion-panel.open{max-height:600px}
+.ap-accordion-body{padding:0 24px 20px;font-size:.9rem;line-height:1.75;color:#444}
+.ap-accordion-body img{max-width:380px;margin:12px 0;border-radius:4px}
+
+/* ── GRID DE ICONOS ──────────────────────────────── */
+.ap-grid{border-top:3px solid #3EB1C8;padding:40px 36px;background:#FAF9F5}
+.ap-grid h2{font-size:1rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#141413;margin-bottom:28px;text-align:center}
+.ap-grid-items{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:24px}
+.ap-grid-item{text-align:center;padding:20px 12px;background:#fff;border-radius:10px;border:1px solid #e8e8e0}
+.ap-grid-item img{width:64px;height:64px;object-fit:contain;margin:0 auto 12px}
+.ap-grid-item .ap-grid-icon{font-size:2rem;margin-bottom:12px}
+.ap-grid-item h4{font-size:.82rem;font-weight:700;color:#141413;margin-bottom:6px;line-height:1.3}
+.ap-grid-item p{font-size:.78rem;color:#666;line-height:1.5}
+
+/* ── VÍDEO ───────────────────────────────────────── */
+.ap-video{border-top:3px solid #3EB1C8;background:#141413;padding:0}
+.ap-video-embed{position:relative;padding-bottom:56.25%;height:0;overflow:hidden}
+.ap-video-embed iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:none}
+.ap-video-embed video{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover}
+.ap-video-caption{padding:20px 36px;background:#1a1a18}
+.ap-video-caption p{font-size:.9rem;color:#c8c8c0;line-height:1.6}
+
+/* ── COMPARATIVA ─────────────────────────────────── */
+.ap-compare{border-top:3px solid #3EB1C8;padding:40px 36px;overflow-x:auto}
+.ap-compare h2{font-size:1rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#141413;margin-bottom:24px}
+.ap-compare table{width:100%;border-collapse:collapse;min-width:500px}
+.ap-compare th{background:#141413;color:#FAF9F5;padding:14px 18px;text-align:left;font-size:.85rem;font-weight:700}
+.ap-compare th:first-child{background:#3EB1C8;color:#141413}
+.ap-compare td{padding:12px 18px;font-size:.85rem;color:#333;border-bottom:1px solid #eee}
+.ap-compare tr:nth-child(even) td{background:#f9f9f7}
+.ap-compare td:first-child{font-weight:700;color:#141413;background:#f0f0ea}
+.ap-compare .yes{color:#27ae60;font-weight:700}
+.ap-compare .no{color:#aaa}
+</style>
+
+<script>
+// ── Carrusel ──────────────────────────────────────
+function apCarousel(id){
+  var track=document.querySelector('#'+id+' .ap-carousel-track');
+  var slides=track.querySelectorAll('.ap-carousel-slide');
+  var dots=document.querySelectorAll('#'+id+' .ap-carousel-dot');
+  var cur=0;
+  function go(n){
+    cur=(n+slides.length)%slides.length;
+    track.style.transform='translateX(-'+cur*100+'%)';
+    dots.forEach(function(d,i){d.classList.toggle('active',i===cur)});
+  }
+  document.querySelector('#'+id+' .ap-carousel-prev').onclick=function(){go(cur-1)};
+  document.querySelector('#'+id+' .ap-carousel-next').onclick=function(){go(cur+1)};
+  dots.forEach(function(d,i){d.onclick=function(){go(i)}});
+}
+// ── Pestañas ──────────────────────────────────────
+function apTabs(id){
+  var btns=document.querySelectorAll('#'+id+' .ap-tabs-nav-btn');
+  var panels=document.querySelectorAll('#'+id+' .ap-tab-panel');
+  btns.forEach(function(btn,i){
+    btn.onclick=function(){
+      btns.forEach(function(b){b.classList.remove('active')});
+      panels.forEach(function(p){p.classList.remove('active')});
+      btn.classList.add('active');
+      panels[i].classList.add('active');
+    };
+  });
+}
+// ── Acordeón ──────────────────────────────────────
+function apAccordion(id){
+  document.querySelectorAll('#'+id+' .ap-accordion-btn').forEach(function(btn){
+    btn.onclick=function(){
+      var panel=btn.nextElementSibling;
+      var icon=btn.querySelector('.ap-accordion-icon');
+      var open=panel.classList.toggle('open');
+      icon.style.transform=open?'rotate(45deg)':'rotate(0deg)';
+    };
+  });
+}
+window.addEventListener('load',function(){
+  document.querySelectorAll('.ap-carousel').forEach(function(el){apCarousel(el.id)});
+  document.querySelectorAll('.ap-tabs').forEach(function(el){apTabs(el.id)});
+  document.querySelectorAll('.ap-accordion').forEach(function(el){apAccordion(el.id)});
+});
+</script>
 """
 
-# ── Helpers ───────────────────────────────────────────────────
+# ══════════════════════════════════════════════════════════════
+# HELPERS
+# ══════════════════════════════════════════════════════════════
 def _esc(v): return escape(str(v or ""))
 
 def _url(v):
@@ -73,121 +205,371 @@ def _url(v):
         return urlunsplit((p.scheme, p.netloc, quote(p.path, safe="/:@!$&'()*+,;="), p.query, p.fragment))
     except: return s
 
-def _es_url(v):
-    return str(v or "").strip().startswith("http")
+def _es_url(v): return str(v or "").strip().startswith("http")
 
-def _preview(col, muestra, es_imagen=False):
-    """Renderiza preview con valor real de la muestra."""
-    if not col or col == "(ninguno)":
-        st.markdown('<div class="prev-vacio">↳ sin campo seleccionado</div>', unsafe_allow_html=True)
-        return
-    if col not in muestra:
-        st.markdown(f'<div class="prev-vacio">⚠️ "{col}" no está en el fichero</div>', unsafe_allow_html=True)
-        return
-    val = str(muestra.get(col, "") or "").strip()
-    if not val:
-        st.markdown('<div class="prev-vacio">↳ campo vacío en este producto</div>', unsafe_allow_html=True)
-        return
-    url = _url(val)
-    if es_imagen and url:
-        st.image(url, width=150)
-    elif _es_url(val):
-        st.markdown(f'<div class="prev-txt" style="font-size:0.7rem;word-break:break-all">↳ {val[:100]}</div>', unsafe_allow_html=True)
-    else:
-        st.markdown(f'<div class="prev-txt">↳ {val[:120]}</div>', unsafe_allow_html=True)
+def _uid():
+    import random, string
+    return "ap" + "".join(random.choices(string.ascii_lowercase, k=6))
 
-def _campo_sel(label, key, cols, muestra, es_imagen=False, default="(ninguno)"):
-    """Selectbox + preview integrado."""
-    opc = ["(ninguno)"] + cols
-    actual = st.session_state.get(key, default)
-    if actual not in opc: actual = "(ninguno)"
-    sel = st.selectbox(label, opc, index=opc.index(actual), key=key)
-    _preview(sel, muestra, es_imagen)
-    return sel
+def _video_embed(url):
+    """Genera el embed correcto según el tipo de URL."""
+    if not url: return ""
+    if "youtube.com/watch" in url or "youtu.be/" in url:
+        vid = url.split("v=")[-1].split("&")[0] if "v=" in url else url.split("/")[-1].split("?")[0]
+        return f'<iframe src="https://www.youtube.com/embed/{vid}" allowfullscreen></iframe>'
+    if "vimeo.com" in url:
+        vid = url.rstrip("/").split("/")[-1]
+        return f'<iframe src="https://player.vimeo.com/video/{vid}" allowfullscreen></iframe>'
+    if url.endswith((".mp4",".webm",".ogg")):
+        return f'<video src="{url}" controls playsinline></video>'
+    return f'<iframe src="{url}" allowfullscreen></iframe>'
 
-# ── Generador HTML ────────────────────────────────────────────
-def generar_aplus(fila: dict, layout: dict) -> str:
-    """
-    layout = {
-      "header": {"img": campo, "titulo": campo, "desc": campo},
-      "modulos": [{"img": campo, "titulo": campo, "desc": campo}, ...],
-      "specs":   [campo, campo, ...]
-    }
-    """
-    def val(campo): return str(fila.get(campo, "") or "").strip()
-    def img(campo):
-        u = _url(val(campo))
-        return f'<img src="{u}" alt="" loading="lazy"/>' if u else ""
+def _val(fila, campo): return str(fila.get(campo, "") or "").strip()
+def _img_tag(fila, campo, alt=""):
+    u = _url(_val(fila, campo))
+    return f'<img src="{u}" alt="{_esc(alt)}" loading="lazy"/>' if u else ""
 
-    # Header
-    nom  = _esc(val(layout["header"].get("titulo","")))
-    desc = _esc(val(layout["header"].get("desc","")))
-    hi   = img(layout["header"].get("img",""))
-    header = f"""
-<section class="ap-header">
-  <div class="ap-header-img">{hi}</div>
-  <div class="ap-header-text"><h1>{nom}</h1><p>{desc}</p></div>
-</section>"""
+# ══════════════════════════════════════════════════════════════
+# GENERADORES POR TIPO DE MÓDULO
+# ══════════════════════════════════════════════════════════════
+def gen_header(fila, cfg):
+    img = _img_tag(fila, cfg.get("img",""))
+    nom = _esc(_val(fila, cfg.get("titulo","")))
+    desc= _esc(_val(fila, cfg.get("desc","")))
+    return f'<section class="ap-header"><div class="ap-header-img">{img}</div><div class="ap-header-text"><h1>{nom}</h1><p>{desc}</p></div></section>'
 
-    # Módulos
-    modulos_html = ""
-    for i, m in enumerate(layout.get("modulos", [])):
-        tit  = _esc(val(m.get("titulo","")))
-        txt  = _esc(val(m.get("desc","")))
-        mi   = img(m.get("img",""))
-        rev  = "ap-module-rev" if i % 2 == 1 else ""
-        modulos_html += f"""
-<section class="ap-module {rev}">
-  <div class="ap-module-img">{mi}</div>
-  <div class="ap-module-text">
-    <div class="ap-accent"></div>
-    <h2>{tit}</h2>
-    <p>{txt}</p>
-  </div>
-</section>"""
+def gen_modulo(fila, cfg, idx):
+    img  = _img_tag(fila, cfg.get("img",""))
+    tit  = _esc(_val(fila, cfg.get("titulo","")))
+    txt  = _esc(_val(fila, cfg.get("desc","")))
+    rev  = "ap-module-rev" if idx % 2 == 1 else ""
+    return f'<section class="ap-module {rev}"><div class="ap-module-img">{img}</div><div class="ap-module-text"><div class="ap-accent"></div><h2>{tit}</h2><p>{txt}</p></div></section>'
 
-    # Specs
-    spec_items = ""
-    for campo in layout.get("specs", []):
-        v = val(campo)
+def gen_specs(fila, cfg):
+    items = ""
+    for campo in cfg.get("campos", []):
+        v = _val(fila, campo)
         if v and not _es_url(v):
-            spec_items += f'<div class="ap-spec-item"><div class="ap-spec-bullet"></div><span class="ap-spec-text">{_esc(v)}</span></div>'
-    specs_html = f"""
-<section class="ap-specs">
-  <h2>Caractéristiques</h2>
-  <div class="ap-specs-grid">{spec_items}</div>
-</section>""" if spec_items else ""
+            items += f'<div class="ap-spec-item"><div class="ap-spec-bullet"></div><span class="ap-spec-text">{_esc(v)}</span></div>'
+    titulo = _esc(cfg.get("titulo_fijo", "Caractéristiques"))
+    return f'<section class="ap-specs"><h2>{titulo}</h2><div class="ap-specs-grid">{items}</div></section>' if items else ""
 
-    return f"<style>{CSS_APLUS}</style>{header}{modulos_html}{specs_html}"
+def gen_carrusel(fila, cfg):
+    slides_cfg = cfg.get("slides", [])
+    if not slides_cfg: return ""
+    uid = _uid()
+    slides_html = dots_html = ""
+    for i, s in enumerate(slides_cfg):
+        img = _img_tag(fila, s.get("img",""))
+        tit = _esc(_val(fila, s.get("titulo","")) or s.get("titulo_fijo",""))
+        txt = _esc(_val(fila, s.get("desc","")) or s.get("desc_fija",""))
+        cap = f'<div class="ap-carousel-caption"><h3>{tit}</h3><p>{txt}</p></div>' if tit or txt else ""
+        slides_html += f'<div class="ap-carousel-slide">{img}{cap}</div>'
+        dots_html   += f'<button class="ap-carousel-dot {"active" if i==0 else ""}"></button>'
+    return f'''<div class="ap-carousel" id="{uid}">
+  <div class="ap-carousel-track">{slides_html}</div>
+  <button class="ap-carousel-btn ap-carousel-prev">&#8592;</button>
+  <button class="ap-carousel-btn ap-carousel-next">&#8594;</button>
+  <div class="ap-carousel-dots">{dots_html}</div>
+</div>'''
 
+def gen_tabs(fila, cfg):
+    tabs_cfg = cfg.get("tabs", [])
+    if not tabs_cfg: return ""
+    uid = _uid()
+    nav = content = ""
+    for i, t in enumerate(tabs_cfg):
+        label = _esc(_val(fila, t.get("label","")) or t.get("label_fijo", f"Tab {i+1}"))
+        img   = _img_tag(fila, t.get("img",""))
+        tit   = _esc(_val(fila, t.get("titulo","")) or t.get("titulo_fijo",""))
+        txt   = _esc(_val(fila, t.get("desc","")) or t.get("desc_fija",""))
+        nav     += f'<button class="ap-tabs-nav-btn {"active" if i==0 else ""}">{label}</button>'
+        content += f'<div class="ap-tab-panel {"active" if i==0 else ""}"><div class="ap-tab-panel-img">{img}</div><div class="ap-tab-panel-text"><h3>{tit}</h3><p>{txt}</p></div></div>'
+    return f'<div class="ap-tabs" id="{uid}"><div class="ap-tabs-nav">{nav}</div><div class="ap-tabs-content">{content}</div></div>'
 
-def generar_zip(df, layout):
+def gen_accordion(fila, cfg):
+    items_cfg = cfg.get("items", [])
+    if not items_cfg: return ""
+    uid = _uid()
+    items_html = ""
+    for item in items_cfg:
+        tit = _esc(_val(fila, item.get("titulo","")) or item.get("titulo_fijo",""))
+        txt = _esc(_val(fila, item.get("desc","")) or item.get("desc_fija",""))
+        img = _img_tag(fila, item.get("img",""))
+        img_html = f'<div>{img}</div>' if img else ""
+        items_html += f'''<div class="ap-accordion-item">
+  <button class="ap-accordion-btn">{tit}<span class="ap-accordion-icon">+</span></button>
+  <div class="ap-accordion-panel"><div class="ap-accordion-body">{img_html}<p>{txt}</p></div></div>
+</div>'''
+    return f'<div class="ap-accordion" id="{uid}">{items_html}</div>'
+
+def gen_grid(fila, cfg):
+    items_cfg = cfg.get("items", [])
+    if not items_cfg: return ""
+    titulo = _esc(cfg.get("titulo_fijo","Características destacadas"))
+    items_html = ""
+    for item in items_cfg:
+        img  = _img_tag(fila, item.get("img",""))
+        icon = item.get("icon_fijo","")
+        tit  = _esc(_val(fila, item.get("titulo","")) or item.get("titulo_fijo",""))
+        txt  = _esc(_val(fila, item.get("desc","")) or item.get("desc_fija",""))
+        icono_html = img or (f'<div class="ap-grid-icon">{icon}</div>' if icon else "")
+        items_html += f'<div class="ap-grid-item">{icono_html}<h4>{tit}</h4><p>{txt}</p></div>'
+    return f'<section class="ap-grid"><h2>{titulo}</h2><div class="ap-grid-items">{items_html}</div></section>'
+
+def gen_video(fila, cfg):
+    url_campo = _val(fila, cfg.get("url_campo",""))
+    url_fija  = cfg.get("url_fija","")
+    url = url_fija or url_campo
+    if not url: return ""
+    embed = _video_embed(url)
+    caption = _esc(_val(fila, cfg.get("caption","")) or cfg.get("caption_fija",""))
+    cap_html = f'<div class="ap-video-caption"><p>{caption}</p></div>' if caption else ""
+    return f'<section class="ap-video"><div class="ap-video-embed">{embed}</div>{cap_html}</section>'
+
+def gen_compare(fila, cfg):
+    cols_cfg = cfg.get("columnas", [])  # [{label, campos:[campo1,campo2,...]}]
+    filas_cfg = cfg.get("filas", [])    # [{label, valores:[val1,val2,...]}]
+    if not cols_cfg and not filas_cfg: return ""
+    titulo = _esc(cfg.get("titulo_fijo","Comparaison des modèles"))
+    # Cabecera
+    ths = "<th>Característica</th>" + "".join(f'<th>{_esc(c.get("label",""))}</th>' for c in cols_cfg)
+    # Filas de datos
+    rows = ""
+    for f in filas_cfg:
+        tds = f'<td>{_esc(f.get("label",""))}</td>'
+        for i, c in enumerate(cols_cfg):
+            val_campo = _val(fila, c.get("campos",[])[i]) if i < len(c.get("campos",[])) else ""
+            val_fijo  = f.get("valores",[""])[i] if i < len(f.get("valores",[])) else ""
+            v = val_fijo or val_campo
+            cls = "yes" if v.lower() in ("sí","si","yes","oui","✓","✔") else ("no" if v.lower() in ("no","non","✗","✘") else "")
+            tds += f'<td class="{cls}">{_esc(v)}</td>'
+        rows += f'<tr>{tds}</tr>'
+    return f'<section class="ap-compare"><h2>{titulo}</h2><table><thead><tr>{ths}</tr></thead><tbody>{rows}</tbody></table></section>'
+
+# ── Dispatcher ────────────────────────────────────────────────
+GENERADORES = {
+    "header":    gen_header,
+    "modulo":    gen_modulo,
+    "specs":     gen_specs,
+    "carrusel":  gen_carrusel,
+    "tabs":      gen_tabs,
+    "accordion": gen_accordion,
+    "grid":      gen_grid,
+    "video":     gen_video,
+    "compare":   gen_compare,
+}
+
+def generar_aplus(fila: dict, bloques: list) -> str:
+    partes = [CSS_JS]
+    mod_idx = 0
+    for b in bloques:
+        tipo = b.get("tipo","")
+        cfg  = b.get("cfg", {})
+        fn   = GENERADORES.get(tipo)
+        if not fn: continue
+        if tipo == "modulo":
+            partes.append(fn(fila, cfg, mod_idx))
+            mod_idx += 1
+        else:
+            partes.append(fn(fila, cfg))
+    return "\n".join(p for p in partes if p)
+
+def generar_zip(df, bloques):
     buf = io.BytesIO()
     with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as zf:
         for _, fila in df.iterrows():
             sku  = str(fila.get("SKU","sin_sku")).strip().replace("/","_").replace(" ","_")
-            html = generar_aplus(fila.to_dict(), layout)
+            html = generar_aplus(fila.to_dict(), bloques)
             zf.writestr(f"{sku}_aplus.html", html.encode("utf-8"))
     buf.seek(0)
     return buf.getvalue()
 
 
-# ── UI ────────────────────────────────────────────────────────
-st.markdown(f"""
-<h1 style="font-size:2rem;font-weight:800;color:{CC_FONDO};margin-bottom:.3rem">🌟 A+ Content Generator</h1>
-<p style="color:#888;margin-bottom:1.5rem">Amazon · Mapea los campos del fichero Plytix a cada módulo</p>
-""", unsafe_allow_html=True)
+# ══════════════════════════════════════════════════════════════
+# UI — HELPERS
+# ══════════════════════════════════════════════════════════════
+def _prev(col, muestra, es_imagen=False):
+    if not col or col == "(ninguno)":
+        st.markdown('<div class="prev-vacio">↳ sin campo</div>', unsafe_allow_html=True); return
+    if col not in muestra:
+        st.markdown(f'<div class="prev-vacio">⚠️ "{col}" no está en el fichero</div>', unsafe_allow_html=True); return
+    val = str(muestra.get(col,"") or "").strip()
+    if not val:
+        st.markdown('<div class="prev-vacio">↳ vacío en este producto</div>', unsafe_allow_html=True); return
+    url = _url(val)
+    if es_imagen and url: st.image(url, width=130)
+    elif _es_url(val): st.markdown(f'<div class="prev-txt" style="font-size:.7rem;word-break:break-all">↳ {val[:90]}</div>', unsafe_allow_html=True)
+    else: st.markdown(f'<div class="prev-txt">↳ {val[:100]}</div>', unsafe_allow_html=True)
 
-# ── Paso 1: cargar fichero ─────────────────────────────────────
-st.markdown('<div class="section"><h3>📂 Paso 1 — Cargar fichero de datos</h3>', unsafe_allow_html=True)
+def _sel(label, key, opc, muestra, es_imagen=False):
+    lst = ["(ninguno)"] + opc
+    actual = st.session_state.get(key, "(ninguno)")
+    if actual not in lst: actual = "(ninguno)"
+    v = st.selectbox(label, lst, index=lst.index(actual), key=key, label_visibility="visible")
+    _prev(v if v != "(ninguno)" else None, muestra, es_imagen)
+    return v if v != "(ninguno)" else ""
+
+def _txt_fijo(label, key, placeholder=""):
+    return st.text_input(label, key=key, placeholder=placeholder)
+
+
+# ══════════════════════════════════════════════════════════════
+# UI — CONSTRUCTOR DE BLOQUES
+# ══════════════════════════════════════════════════════════════
+TIPOS = {
+    "header":    "🖼 Hero (imagen + título + desc)",
+    "modulo":    "📐 Texto · Imagen (alternado)",
+    "carrusel":  "🎠 Carrusel de imágenes",
+    "tabs":      "📑 Pestañas",
+    "accordion": "📂 Acordeón",
+    "grid":      "⬡ Grid de iconos",
+    "video":     "▶️ Vídeo",
+    "compare":   "📊 Comparativa",
+    "specs":     "📋 Especificaciones",
+}
+
+def render_bloque_ui(idx, bloque, cols_img, cols_txt, muestra):
+    tipo = bloque["tipo"]
+    cfg  = bloque.setdefault("cfg", {})
+    pfx  = f"b{idx}"
+
+    with st.container(border=True):
+        hc1, hc2, hc3, hc4 = st.columns([4, 1, 1, 1])
+        badge_col = {"header":"#3EB1C8","modulo":"#5bbf3e","carrusel":"#e8a020",
+                     "tabs":"#a05ce8","accordion":"#e85c5c","grid":"#3EB1C8",
+                     "video":"#e8a020","compare":"#5bbf3e","specs":"#888"}.get(tipo,"#3EB1C8")
+        with hc1:
+            st.markdown(f'<p style="font-weight:700;color:#FAF9F5"><span style="background:{badge_col};color:#141413;padding:2px 9px;border-radius:20px;font-size:.72rem;margin-right:8px">{tipo}</span>{TIPOS[tipo]}</p>', unsafe_allow_html=True)
+        with hc2:
+            if idx > 0 and st.button("↑", key=f"{pfx}_up", use_container_width=True):
+                return "up"
+        with hc3:
+            if st.button("↓", key=f"{pfx}_dn", use_container_width=True):
+                return "dn"
+        with hc4:
+            if st.button("🗑", key=f"{pfx}_del", use_container_width=True):
+                return "del"
+
+        # ── Config por tipo ──────────────────────────────────
+        if tipo == "header":
+            c1, c2, c3 = st.columns(3)
+            with c1: cfg["img"]    = _sel("Imagen hero", f"{pfx}_img", cols_img, muestra, True)
+            with c2: cfg["titulo"] = _sel("Título",      f"{pfx}_tit", cols_txt, muestra)
+            with c3: cfg["desc"]   = _sel("Descripción", f"{pfx}_desc",cols_txt, muestra)
+
+        elif tipo == "modulo":
+            c1, c2, c3 = st.columns(3)
+            with c1: cfg["img"]    = _sel("Imagen",  f"{pfx}_img", cols_img, muestra, True)
+            with c2: cfg["titulo"] = _sel("Título",  f"{pfx}_tit", cols_txt, muestra)
+            with c3: cfg["desc"]   = _sel("Texto",   f"{pfx}_desc",cols_txt, muestra)
+
+        elif tipo == "specs":
+            cfg["titulo_fijo"] = _txt_fijo("Título sección", f"{pfx}_tit_fijo", "Caractéristiques")
+            cfg["campos"] = st.multiselect("Campos:", ["(ninguno)"] + cols_txt,
+                default=[c for c in cfg.get("campos",[]) if c in cols_txt],
+                key=f"{pfx}_campos")
+
+        elif tipo == "video":
+            c1, c2 = st.columns(2)
+            with c1: cfg["url_campo"] = _sel("Campo URL vídeo", f"{pfx}_url_campo", cols_txt+cols_img, muestra)
+            with c2: cfg["url_fija"]  = _txt_fijo("O URL fija (YouTube/Vimeo/mp4)", f"{pfx}_url_fija", "https://youtu.be/...")
+            cfg["caption"] = _sel("Texto caption (opcional)", f"{pfx}_cap", cols_txt, muestra)
+
+        elif tipo == "carrusel":
+            n = st.number_input("Número de slides", 2, 8, max(2, len(cfg.get("slides",[]))), key=f"{pfx}_n")
+            slides = cfg.setdefault("slides", [{}]*int(n))
+            while len(slides) < int(n): slides.append({})
+            cfg["slides"] = slides[:int(n)]
+            for si, slide in enumerate(cfg["slides"]):
+                st.markdown(f'<p style="font-size:.8rem;color:#888;margin-top:8px">Slide {si+1}</p>', unsafe_allow_html=True)
+                sc1, sc2, sc3 = st.columns(3)
+                with sc1: slide["img"]        = _sel("Imagen",  f"{pfx}_s{si}_img", cols_img, muestra, True)
+                with sc2: slide["titulo_fijo"]= _txt_fijo("Título fijo", f"{pfx}_s{si}_tit", "")
+                with sc3: slide["desc_fija"]  = _txt_fijo("Texto fijo",  f"{pfx}_s{si}_desc","")
+
+        elif tipo == "tabs":
+            n = st.number_input("Número de pestañas", 2, 6, max(2, len(cfg.get("tabs",[]))), key=f"{pfx}_n")
+            tabs = cfg.setdefault("tabs", [{}]*int(n))
+            while len(tabs) < int(n): tabs.append({})
+            cfg["tabs"] = tabs[:int(n)]
+            for ti, tab in enumerate(cfg["tabs"]):
+                st.markdown(f'<p style="font-size:.8rem;color:#888;margin-top:8px">Pestaña {ti+1}</p>', unsafe_allow_html=True)
+                tc1, tc2, tc3, tc4 = st.columns(4)
+                with tc1: tab["label_fijo"] = _txt_fijo("Etiqueta",f"{pfx}_t{ti}_label","Pestaña")
+                with tc2: tab["img"]        = _sel("Imagen", f"{pfx}_t{ti}_img", cols_img, muestra, True)
+                with tc3: tab["titulo"]     = _sel("Título", f"{pfx}_t{ti}_tit", cols_txt, muestra)
+                with tc4: tab["desc"]       = _sel("Texto",  f"{pfx}_t{ti}_desc",cols_txt, muestra)
+
+        elif tipo == "accordion":
+            n = st.number_input("Número de items", 2, 8, max(2, len(cfg.get("items",[]))), key=f"{pfx}_n")
+            items = cfg.setdefault("items", [{}]*int(n))
+            while len(items) < int(n): items.append({})
+            cfg["items"] = items[:int(n)]
+            for ai, item in enumerate(cfg["items"]):
+                st.markdown(f'<p style="font-size:.8rem;color:#888;margin-top:8px">Item {ai+1}</p>', unsafe_allow_html=True)
+                ac1, ac2, ac3, ac4 = st.columns(4)
+                with ac1: item["titulo_fijo"] = _txt_fijo("Título fijo", f"{pfx}_a{ai}_tit","")
+                with ac2: item["titulo"]      = _sel("O campo título", f"{pfx}_a{ai}_tit_c", cols_txt, muestra)
+                with ac3: item["desc"]        = _sel("Texto",  f"{pfx}_a{ai}_desc", cols_txt, muestra)
+                with ac4: item["img"]         = _sel("Imagen (opcional)", f"{pfx}_a{ai}_img", cols_img, muestra, True)
+
+        elif tipo == "grid":
+            cfg["titulo_fijo"] = _txt_fijo("Título sección", f"{pfx}_gtit","Características destacadas")
+            n = st.number_input("Número de items", 2, 8, max(2, len(cfg.get("items",[]))), key=f"{pfx}_n")
+            items = cfg.setdefault("items", [{}]*int(n))
+            while len(items) < int(n): items.append({})
+            cfg["items"] = items[:int(n)]
+            for gi, item in enumerate(cfg["items"]):
+                st.markdown(f'<p style="font-size:.8rem;color:#888;margin-top:8px">Item {gi+1}</p>', unsafe_allow_html=True)
+                gc1, gc2, gc3, gc4 = st.columns(4)
+                with gc1: item["icon_fijo"]   = _txt_fijo("Emoji/icono", f"{pfx}_g{gi}_ico","⚡")
+                with gc2: item["img"]         = _sel("O imagen",  f"{pfx}_g{gi}_img", cols_img, muestra, True)
+                with gc3: item["titulo_fijo"] = _txt_fijo("Título fijo", f"{pfx}_g{gi}_tit","")
+                with gc4: item["desc_fija"]   = _txt_fijo("Texto fijo",  f"{pfx}_g{gi}_desc","")
+
+        elif tipo == "compare":
+            cfg["titulo_fijo"] = _txt_fijo("Título", f"{pfx}_ctit","Comparaison")
+            n_cols = st.number_input("Columnas (modelos)", 2, 5, max(2, len(cfg.get("columnas",[]))), key=f"{pfx}_nc")
+            n_rows = st.number_input("Filas (características)", 1, 12, max(3, len(cfg.get("filas",[]))), key=f"{pfx}_nr")
+            cols_c = cfg.setdefault("columnas", [{}]*int(n_cols))
+            while len(cols_c) < int(n_cols): cols_c.append({})
+            cfg["columnas"] = cols_c[:int(n_cols)]
+            filas_c = cfg.setdefault("filas", [{}]*int(n_rows))
+            while len(filas_c) < int(n_rows): filas_c.append({})
+            cfg["filas"] = filas_c[:int(n_rows)]
+            st.markdown('<p style="font-size:.8rem;color:#888;margin-top:8px">Cabeceras de columnas</p>', unsafe_allow_html=True)
+            ccols = st.columns(int(n_cols))
+            for ci, col_c in enumerate(cfg["columnas"]):
+                with ccols[ci]: col_c["label"] = _txt_fijo(f"Modelo {ci+1}", f"{pfx}_cc{ci}","Modelo")
+            st.markdown('<p style="font-size:.8rem;color:#888;margin-top:6px">Filas</p>', unsafe_allow_html=True)
+            for ri, fila_c in enumerate(cfg["filas"]):
+                rcols = st.columns([2]+[1]*int(n_cols))
+                with rcols[0]: fila_c["label"] = _txt_fijo(f"Característica {ri+1}", f"{pfx}_rf{ri}","")
+                vals = fila_c.setdefault("valores", [""]*int(n_cols))
+                while len(vals) < int(n_cols): vals.append("")
+                fila_c["valores"] = vals[:int(n_cols)]
+                for ci in range(int(n_cols)):
+                    with rcols[ci+1]: fila_c["valores"][ci] = _txt_fijo("", f"{pfx}_rv{ri}_{ci}", "Sí/No/valor")
+
+    return None
+
+
+# ══════════════════════════════════════════════════════════════
+# UI — PRINCIPAL
+# ══════════════════════════════════════════════════════════════
+st.markdown(f'<h1 style="font-size:2rem;font-weight:800;color:{CC_F};margin-bottom:.3rem">🌟 A+ Content Generator</h1><p style="color:#888;margin-bottom:1.5rem">Marketplaces · Construye módulos y genera HTML listo para pegar</p>', unsafe_allow_html=True)
+
+# ── Paso 1 ────────────────────────────────────────────────────
+st.markdown('<div class="section"><h3>📂 Paso 1 — Cargar datos</h3>', unsafe_allow_html=True)
 uploaded = st.file_uploader("Excel o CSV exportado desde Plytix", type=["xlsx","xls","csv"])
 if uploaded:
     try:
         df = pd.read_csv(uploaded) if uploaded.name.endswith(".csv") else pd.read_excel(uploaded)
         col_sku = next((c for c in df.columns if "sku" in c.lower()), None)
-        if col_sku and col_sku != "SKU":
-            df = df.rename(columns={col_sku: "SKU"})
+        if col_sku and col_sku != "SKU": df = df.rename(columns={col_sku:"SKU"})
         st.session_state["df_aplus"] = df
+        st.session_state.setdefault("bloques_aplus", [])
         st.success(f"✅ {len(df)} productos · {len(df.columns)} campos")
     except Exception as e:
         st.error(f"❌ {e}")
@@ -197,89 +579,70 @@ if st.session_state.get("df_aplus") is None:
     st.info("Carga un fichero para continuar.")
     st.stop()
 
-df   = st.session_state["df_aplus"]
-cols = [c for c in df.columns if c != "SKU"]
-cols_img  = [c for c in cols if any(k in c.lower() for k in ["foto","photo","image","img","jpg","png","banner","enhanced","gallery"])]
-cols_txt  = [c for c in cols if c not in cols_img]
-
-# Producto de muestra para preview
+df      = st.session_state["df_aplus"]
+cols    = [c for c in df.columns if c != "SKU"]
+cols_img= [c for c in cols if any(k in c.lower() for k in ["foto","photo","image","img","jpg","png","banner","enhanced","gallery"])]
+cols_txt= [c for c in cols if c not in cols_img]
 skus    = df["SKU"].astype(str).tolist()
-sku_sel = st.selectbox("Producto de muestra para preview:", skus, key="sku_prev_aplus")
-muestra = df[df["SKU"].astype(str) == sku_sel].iloc[0].to_dict()
 
-# ── Paso 2: mapear campos ──────────────────────────────────────
-st.markdown('<div class="section"><h3>🗂 Paso 2 — Diseña la estructura A+</h3>', unsafe_allow_html=True)
+sku_sel = st.selectbox("🔍 Producto de muestra para previews:", skus, key="sku_prev_aplus")
+muestra = df[df["SKU"].astype(str)==sku_sel].iloc[0].to_dict()
 
-# Header
-st.markdown("**Header**")
-hc1, hc2, hc3 = st.columns(3)
-with hc1: h_img   = _campo_sel("Imagen hero",    "h_img",   cols_img, muestra, es_imagen=True)
-with hc2: h_tit   = _campo_sel("Título",          "h_tit",   cols_txt, muestra)
-with hc3: h_desc  = _campo_sel("Descripción",     "h_desc",  cols_txt, muestra)
+# ── Paso 2 ────────────────────────────────────────────────────
+st.markdown('<div class="section"><h3>🧱 Paso 2 — Construye la estructura</h3>', unsafe_allow_html=True)
 
-st.divider()
+# Barra de añadir bloques
+cols_bar = st.columns(len(TIPOS))
+for i, (tipo, label) in enumerate(TIPOS.items()):
+    with cols_bar[i]:
+        if st.button(f"＋ {label.split(' ')[0]}", key=f"add_{tipo}", use_container_width=True, help=label):
+            st.session_state.setdefault("bloques_aplus", []).append({"tipo": tipo, "cfg": {}})
+            st.rerun()
 
-# Módulos
-n_mod = st.number_input("Número de módulos texto+imagen", min_value=1, max_value=8, value=4, step=1, key="n_mod")
-modulos_layout = []
-for i in range(int(n_mod)):
-    st.markdown(f"**Módulo {i+1}** {'(foto izq · texto dcha)' if i%2==1 else '(texto izq · foto dcha)'}")
-    mc1, mc2, mc3 = st.columns(3)
-    with mc1: m_img = _campo_sel("Imagen",   f"m{i}_img",  cols_img, muestra, es_imagen=True)
-    with mc2: m_tit = _campo_sel("Título",   f"m{i}_tit",  cols_txt, muestra)
-    with mc3: m_desc= _campo_sel("Texto",    f"m{i}_desc", cols_txt, muestra)
-    modulos_layout.append({"img": m_img, "titulo": m_tit, "desc": m_desc})
+bloques = st.session_state.get("bloques_aplus", [])
 
-st.divider()
+if not bloques:
+    st.info("Añade bloques desde los botones de arriba.")
+else:
+    to_del = to_up = to_dn = None
+    for i, bloque in enumerate(bloques):
+        result = render_bloque_ui(i, bloque, cols_img, cols_txt, muestra)
+        if result == "del": to_del = i
+        elif result == "up": to_up = i
+        elif result == "dn": to_dn = i
 
-# Specs
-st.markdown("**Módulo de especificaciones** — selecciona los campos que aparecerán como bullets")
-specs_sel = st.multiselect(
-    "Campos de especificaciones:",
-    options=cols,
-    default=[c for c in ["highlight_corto_producto_1","highlight_corto_producto_2",
-                          "highlight_corto_producto_3","highlight_corto_producto_4",
-                          "highlight_corto_producto_5","highlight_corto_producto_6",
-                          "watts","voltaje","product_weight","product_width",
-                          "product_height","product_depth"] if c in cols],
-    key="specs_sel"
-)
+    if to_del is not None:
+        bloques.pop(to_del); st.rerun()
+    if to_up is not None and to_up > 0:
+        bloques[to_up], bloques[to_up-1] = bloques[to_up-1], bloques[to_up]; st.rerun()
+    if to_dn is not None and to_dn < len(bloques)-1:
+        bloques[to_dn], bloques[to_dn+1] = bloques[to_dn+1], bloques[to_dn]; st.rerun()
+
+st.session_state["bloques_aplus"] = bloques
 st.markdown('</div>', unsafe_allow_html=True)
 
-# ── Paso 3: preview y descarga ────────────────────────────────
-st.markdown('<div class="section"><h3>👁 Paso 3 — Preview y descarga</h3>', unsafe_allow_html=True)
+# ── Paso 3 ────────────────────────────────────────────────────
+if bloques:
+    st.markdown('<div class="section"><h3>👁 Paso 3 — Preview y descarga</h3>', unsafe_allow_html=True)
+    frag = generar_aplus(muestra, bloques)
 
-layout = {
-    "header":  {"img": h_img, "titulo": h_tit, "desc": h_desc},
-    "modulos": modulos_layout,
-    "specs":   specs_sel,
-}
+    with st.expander(f"👁 Preview — {sku_sel}", expanded=True):
+        st.components.v1.html(
+            f"<!DOCTYPE html><html><head><meta charset='UTF-8'/></head><body style='background:#fff'>{frag}</body></html>",
+            height=1000, scrolling=True)
 
-with st.expander(f"👁 Preview — {sku_sel}", expanded=True):
-    frag = generar_aplus(muestra, layout)
-    st.components.v1.html(
-        f"<!DOCTYPE html><html><head><meta charset='UTF-8'/></head><body style='background:#fff'>{frag}</body></html>",
-        height=900, scrolling=True
-    )
+    st.markdown("**📋 Código HTML:**")
+    st.text_area("", value=frag, height=220, key="ta_aplus", label_visibility="collapsed")
+    st.markdown("<br>", unsafe_allow_html=True)
 
-st.markdown("**📋 Código HTML — copia y pega en Amazon A+ Content Manager:**")
-st.text_area("", value=frag, height=260, key="ta_aplus", label_visibility="collapsed")
+    if st.button("⚡ Generar ZIP — todos los productos", key="btn_zip"):
+        with st.spinner("Generando..."):
+            st.session_state["zip_aplus"]   = generar_zip(df, bloques)
+            st.session_state["zip_aplus_n"] = len(df)
 
-st.markdown("<br>", unsafe_allow_html=True)
-
-if st.button("⚡ Generar ZIP — todos los productos", key="btn_zip_aplus"):
-    with st.spinner("Generando A+ para todos los productos..."):
-        st.session_state["zip_aplus"]   = generar_zip(df, layout)
-        st.session_state["zip_aplus_n"] = len(df)
-
-if st.session_state.get("zip_aplus"):
-    st.success(f"✅ {st.session_state['zip_aplus_n']} ficheros A+ listos")
-    st.download_button(
-        label="⬇️ DESCARGAR ZIP (A+)",
-        data=st.session_state["zip_aplus"],
-        file_name="aplus_amazon.zip",
-        mime="application/zip",
-        key="dl_zip_aplus"
-    )
-
-st.markdown('</div>', unsafe_allow_html=True)
+    if st.session_state.get("zip_aplus"):
+        st.success(f"✅ {st.session_state['zip_aplus_n']} ficheros listos")
+        st.download_button("⬇️ DESCARGAR ZIP",
+            data=st.session_state["zip_aplus"], file_name="aplus.zip",
+            mime="application/zip", key="dl_zip")
+    st.markdown('</div>', unsafe_allow_html=True)
